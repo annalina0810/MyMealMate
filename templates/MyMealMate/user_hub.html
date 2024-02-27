@@ -8,4 +8,8 @@
 
 {% block body_block %}
 <h1>User Hub</h1>
+<ul>
+    <li><a href="{% url 'mymealmate:shopping_list' %}">My Shopping List</a></li>
+    <li><a href="{% url 'mymealmate:my_meals' %}">My Meals</a></li>
+</ul>
 {% endblock %}
