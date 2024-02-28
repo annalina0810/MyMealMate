@@ -36,7 +36,7 @@ class Meal(models.Model):
 class Ingredient(models.Model):
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
-    amount = models.IntegerField(blank=True)
+    amount = models.IntegerField(blank=True, null=True)
     unit = models.CharField(max_length=30, blank=True)
 
     def __str__(self):
@@ -65,7 +65,7 @@ class ShoppingList(models.Model):
 class ShoppingListItem(models.Model):
     shoppingList = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
-    amount = models.IntegerField(blank=True)
+    amount = models.IntegerField(blank=True, null=True)
     unit = models.CharField(max_length=30, blank=True)
     checked = models.BooleanField(default=False)
 
