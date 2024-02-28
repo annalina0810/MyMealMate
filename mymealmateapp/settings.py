@@ -68,6 +68,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media'
             ],
+            'libraries': {
+                'my_templatetag': 'MyMealMate.templatetags.MyMealMate_template_tags',
+            }
         },
     },
 ]
@@ -104,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_PROFILE_MODULE = 'MyMealMate.UserProfile'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
