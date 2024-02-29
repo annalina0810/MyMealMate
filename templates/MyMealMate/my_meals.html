@@ -8,6 +8,19 @@
 
 {% block body_block %}
 <h1>My Meals</h1>
+    {% if meals %}
+    <ul>
+        {% for m in meals %}
+        {%if m.url and m.instructions%}
+            <li>{{m.name}} ||  <a href="{{m.url}}">Recipe</a> || instructions: {{m.instructions}}</li>
+        {%else%}
+            <li>{{m.name}}</li>
+        {%endif%}
+        {% endfor %}
+    </ul>
+    {%else%}
+    <p>No meals</p>
+    {%endif%}
 <ul>
     <li><a href="{% url 'MyMealMate:new_meal' %}">Make a New Meal</a></li>
 </ul>
