@@ -73,7 +73,6 @@ nav a:hover {
 
 .main {
     background-color: #fff;
-    overflow-y: auto;
     height: 3000px;
 }
 .main-content {
