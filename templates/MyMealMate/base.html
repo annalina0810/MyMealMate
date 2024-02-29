@@ -1,3 +1,43 @@
 <!DOCTYPE html>
-{% load staticfiles %}
-{% load MyMealMate_template_tags %}
+{%load staticfiles%}
+{%load MyMealMate_template_tags%}
+
+<html>
+  <head>
+      <title>
+        MyMealMate -
+        {% block title_block %}
+          Does this work?
+        {% endblock %}
+      </title>
+
+  </head>
+
+  <body>
+    <header>
+      <h1>My Meal Mate</h1>
+      <img src="{% static 'images/small_logo.png' %}" alt="Meal Mate Logo"></a>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="{% url 'MyMealMate:user_hub' %}">User Hub</a></li>
+        <li><a href="{% url 'MyMealMate:my_meals' %}">My meals</a></li>
+        <li><a href="{% url 'MyMealMate:schedule' %}">Schedule</a></li>
+        <li><a href="{% url 'MyMealMate:shopping_list' %}">Shopping List</a></li>
+        <li><a href="{% url 'MyMealMate:profile' %}">Profile</a></li>
+      </ul>
+    </nav>
+    
+    <hr/>
+
+    <div>
+      {% block body_block %}
+      {% endblock %}
+    </div>
+    <div>
+      {% block sidebar_block %}
+      {% endblock %}
+    </div>
+    
+  </body>
+</html>
