@@ -19,18 +19,24 @@
       <div class="logo">
           <a href="{% url 'MyMealMate:user_hub' %}"><img src="{% static 'images/small_logo.png' %}" alt="Meal Mate Logo"></a></a>
       </div>
+  
       <ul class="nav-links">
-          <li><a href="{% url 'MyMealMate:user_hub' %}" {% if nbar == 'user_hub' %}class="active"{% endif %}>User Hub</a></li>
-          <li><a href="{% url 'MyMealMate:my_meals' %}" {% if nbar == 'my_meals' %}class="active"{% endif %}>My Meals</a></li>
-          <li><a href="{% url 'MyMealMate:schedule' %}" {% if nbar == 'schedule' %}class="active"{% endif %}>Schedule</a></li>
-          <li><a href="{% url 'MyMealMate:shopping_list' %}" {% if nbar == 'shopping_list' %}class="active"{% endif %}>Shopping List</a></li>
-          <li><a href="{% url 'MyMealMate:profile' %}" {% if nbar == 'profile' %}class="active"{% endif %}>Profile</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'MyMealMate:user_hub' %}" class="{% if nbar == 'user_hub' %}active{% endif %}">User Hub</a></li>
+          <li><a href="{% url 'MyMealMate:my_meals' %}" class="{% if nbar == 'my_meals' %}active{% endif %}">My Meals</a></li>
+          <li><a href="{% url 'MyMealMate:schedule' %}" class="{% if nbar == 'schedule' %}active{% endif %}">Schedule</a></li>
+          <li><a href="{% url 'MyMealMate:shopping_list' %}" class="{% if nbar == 'shopping_list' %}active{% endif %}">Shopping List</a></li>
+          <li><a href="{% url 'MyMealMate:profile' %}" class="{% if nbar == 'profile' %}active{% endif %}">Profile</a></li>
+          {% endif %}
       </ul>
   
       <div class="auth-links">
+          {% if user.is_authenticated %}
           <a href="#">Logout</a>
+          {% else %}  
           <a href="#">Login</a>
           <a href="#" class="signup-link">Signup</a>
+          {% endif %}
       </div>
     </nav>
 
