@@ -4,7 +4,7 @@
 }
 
 body {
-    margin: 10px;
+    margin: 0;
     font-family: 'Atyp', sans-serif;
 }
 
@@ -13,11 +13,10 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 100px 0 100px;
+    padding: 10px 100px 0 100px;
     position: sticky;
     top: 0;
     z-index: 1000; /* Ensure navigation stays on top */
-    border-radius: 10px; /* Rounded corners */
     height: 50px;
     
 }
@@ -74,15 +73,13 @@ nav a:hover {
 
 .main {
     background-color: #fff;
-    padding: 0px 20px;
     overflow-y: auto;
     height: 3000px;
 }
 .main-content {
     background-color: #B71D0B;
-    padding: 20px;
+    padding: 20px 50px;
     margin-bottom: 20px;
     height: 100%;
-    border-radius: 50px;
 
 }
