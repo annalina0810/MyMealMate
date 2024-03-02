@@ -76,6 +76,21 @@ class ShoppingListItem(models.Model):
 class Schedule(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+    def scheduleMeal(self, day, meal):
+        day.scheduledMeals.add(meal)
+        meal.schedCounter += 1
+        day.save()
+        meal.save()
+
+    def unscheduleMeal(self, day, meal):
+        if meal in day.scheduledMeals.all():
+            day.scheduledMeals.remove(meal)
+            meal.schedCounter -= 1
+            day.save()
+            meal.save()
+        else:
+            return "The meal wasn't even scheduled lol"
+
 
 class Day(models.Model):
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)

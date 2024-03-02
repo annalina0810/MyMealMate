@@ -12,9 +12,9 @@
     <ul>
         {% for m in meals %}
         {%if m.url and m.instructions%}
-            <li>{{m.name}} ||  <a href="{{m.url}}">Recipe</a> || instructions: {{m.instructions}}</li>
+            <li>{{m.name}} ||  <a href="{{m.url}}">Recipe</a> || instructions: {{m.instructions}} || times scheduled: {{m.schedCounter}}</li>
         {%else%}
-            <li>{{m.name}}</li>
+            <li>{{m.name}}  || times scheduled: {{m.schedCounter}}</li>
         {%endif%}
         {% endfor %}
     </ul>

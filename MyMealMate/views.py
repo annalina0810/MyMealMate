@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from MyMealMate.models import *
+import datetime
 
 
 def home(request):
@@ -46,6 +47,16 @@ def my_meals(request):
     context_dict = {}
     meals = Meal.objects.all()
     context_dict["meals"] = meals
+
+    # see if scheduling and unscheduling works:
+    user = get_user_model().objects.filter(username='test_user')[0]
+    user_schedule = Schedule.objects.get(user=user)
+    today = Day.objects.all()[0]
+    tomorrow = Day(schedule=user_schedule, date=datetime.date.today() + datetime.timedelta(days=1))
+    tomorrow.save()
+    user_schedule.scheduleMeal(tomorrow, meals.get(name="Spaghetti Bolognese"))
+    print(user_schedule.unscheduleMeal(today, meals.get(name="Pizza")))
+    user_schedule.save()
 
     response = render(request, 'MyMealMate/my_meals.html', context=context_dict)
     return response
