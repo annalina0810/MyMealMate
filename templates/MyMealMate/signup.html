@@ -7,5 +7,17 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>Sign Up</h1>
+    <h1>Sign Up</h1>
+    <form id="user_form" method="post" action="{% url 'MyMealMate:signup' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+
+        <input type="submit" name="submit" value="Sign Up" />
+    </form>
+    <br/>
+    <ul>
+        <li><a href="{% url 'MyMealMate:home' %}">Login</a></li>
+    </ul>
 {% endblock %}

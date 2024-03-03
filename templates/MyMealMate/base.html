@@ -20,11 +20,11 @@
     </header>
     <nav>
       <ul>
-        <li><a href="{% url 'MyMealMate:user_hub' %}">User Hub</a></li>
-        <li><a href="{% url 'MyMealMate:my_meals' %}">My meals</a></li>
-        <li><a href="{% url 'MyMealMate:schedule' %}">Schedule</a></li>
-        <li><a href="{% url 'MyMealMate:shopping_list' %}">Shopping List</a></li>
-        <li><a href="{% url 'MyMealMate:profile' %}">Profile</a></li>
+        <li><a href="{% url 'MyMealMate:user_hub'%}">User Hub</a></li>
+        <li><a href="{% url 'MyMealMate:my_meals'%}">My meals</a></li>
+        <li><a href="{% url 'MyMealMate:schedule'%}">Schedule</a></li>
+        <li><a href="{% url 'MyMealMate:shopping_list'%}">Shopping List</a></li>
+        <li><a href="{% url 'MyMealMate:profile'%}">Profile</a></li>
       </ul>
     </nav>
     
@@ -34,10 +34,11 @@
       {% block body_block %}
       {% endblock %}
     </div>
-    <div>
-      {% block sidebar_block %}
-      {% endblock %}
-    </div>
-    
+    <hr />
+    {% if user.is_authenticated %}  
+      <footer>
+        <a href="{% url 'MyMealMate:logout' %}">Logout</a>
+      </footer>
+    {% endif %}
   </body>
 </html>

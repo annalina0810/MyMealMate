@@ -8,4 +8,19 @@
 
 {% block body_block %}
 <h1>Login</h1>
+
+<form id="login_form" method="post" action="{% url 'MyMealMate:home' %}">
+    {% csrf_token %}
+    Username: <input type="text" name="username" value="" size="50" />
+    <br /><br/>
+    Password: <input type="password" name="password" value="" size="50" />
+    <br /><br/>
+    <input type="submit" value="Log In">
+
+</form>
+<br/>
+<ul>
+    <li><a href="{% url 'MyMealMate:signup'%}">Signup</a></li>
+</ul>
+
 {% endblock %}
