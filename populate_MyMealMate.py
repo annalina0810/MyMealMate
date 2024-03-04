@@ -11,21 +11,21 @@ from MyMealMate.models import *
 
 def populate():
 
-    # Create User "testUser" with ShoppingList and Schedule
+    # Create User "test_user" with ShoppingList and Schedule
     UserModel = get_user_model()
-    if not UserModel.objects.filter(username='testUser').exists():  # doesn't actually work apparently
-        testUser = UserModel.objects.create_user('testUser', password='123')
-        testUser.is_superuser = True
-        testUser.is_staff = True
-        testUser.save()
+    if not UserModel.objects.filter(username='test_user').exists():  # doesn't actually work apparently
+        test_user = UserModel.objects.create_user('test_user', password='123')
+        test_user.is_superuser = True
+        test_user.is_staff = True
+        test_user.save()
     else:
-        testUser = UserModel.objects.get(username="testUser")
-        testUser.save()
+        test_user = UserModel.objects.get(username="test_user")
+        test_user.save()
 
-    user_shopping_list = ShoppingList(user=testUser)
+    user_shopping_list = ShoppingList(user=test_user)
     user_shopping_list.save()
 
-    user_schedule = Schedule(user=testUser)
+    user_schedule = Schedule(user=test_user)
     user_schedule.save()
 
     meals = [{"name": "Spaghetti Bolognese", "url": "https://www.recipetineats.com/spaghetti-bolognese/",
@@ -43,7 +43,7 @@ def populate():
                    ]
 
     def add_meal(name, url, instructions):
-        m = Meal.objects.get_or_create(user=testUser, name=name)[0]
+        m = Meal.objects.get_or_create(user=test_user, name=name)[0]
         if url is not None:
             m.url = url
         if instructions is not None:
@@ -77,8 +77,8 @@ def populate():
     new_day = Day(schedule=user_schedule, date=datetime.date.today())
     new_day.save()
     for m in Meal.objects.all():
-        new_day.scheduledMeals.add(m)
-        new_day.save()
+        user_schedule.scheduleMeal(new_day, m)
+    user_schedule.save()
 
 
 if __name__ == "__main__":

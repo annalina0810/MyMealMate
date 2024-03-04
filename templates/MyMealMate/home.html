@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
+{% load MyMealMate_template_tags %}
+
 
 {% block title_block %}
     Login
 {% endblock %}
+            
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/home_styles.css' %}">
+{% endblock %}
+
+{% block script_block %}
+    <script src="{% static 'js/meal_of_the_day.js' %}"></script>
+{% endblock %}
+
 
 {% block body_block %}
 <h1>Login</h1>
@@ -19,8 +30,10 @@
 
 </form>
 <br/>
+
 <ul>
     <li><a href="{% url 'MyMealMate:signup'%}">Signup</a></li>
 </ul>
 
 {% endblock %}
+
