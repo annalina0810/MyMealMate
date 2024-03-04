@@ -137,9 +137,11 @@ def new_meal(request):
         form = MealForm(request.POST)
         if form.is_valid():
             # Save the new meal to the database
-            cat = form.save(commit=True)
-            print(cat, cat.slug)
-            return redirect('/MyMealMate/')
+            meal = form.save(commit=False)
+            meal.user = request.user
+            meal.save()
+            print(meal, meal.slug)
+            return redirect('/MyMealMate/my_meals/')
     else:
         print(form.errors)
 

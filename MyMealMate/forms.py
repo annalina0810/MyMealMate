@@ -13,7 +13,7 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('profilePic', )
+        fields = ('picture', )
 
 from MyMealMate.models import Meal
 
