@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
-{%load MyMealMate_template_tags%}
+{% load MyMealMate_template_tags %}
 
 <html>
     <head>
-      <title>
-
-      </title>
+        <title>
+            Home
+        </title>
+        <script src="{% static 'js/meal_of_the_day.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/home_styles.css' %}">
     </head>
     <body>
+        Homepage
+        <div id="meal_of_the_day"></div>
     </body>
 </html>
