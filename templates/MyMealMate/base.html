@@ -45,10 +45,11 @@
       {% endblock %}
       </div>
     </div>
-    <div>
-      {% block sidebar_block %}
-      {% endblock %}
-    </div>
-    
+    <hr />
+    {% if user.is_authenticated %}  
+      <footer>
+        <a href="{% url 'MyMealMate:logout' %}">Logout</a>
+      </footer>
+    {% endif %}
   </body>
 </html>

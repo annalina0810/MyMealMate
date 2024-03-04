@@ -16,4 +16,5 @@ urlpatterns = [
     path('schedule/', views.schedule, name='schedule'),
     path('shopping_list/', views.shopping_list, name='shopping_list'),
     path('shopping_list/edit_shopping_list/', views.edit_shopping_list, name='edit_shopping_list'),
+    path('logout/', views.user_logout, name='logout'),
 ]
