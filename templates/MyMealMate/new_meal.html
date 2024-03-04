@@ -9,7 +9,7 @@
 {% block body_block %}
 <h1>Add a New Meal</h1>
 <div>
-    <form id="meal_form" method="post" action="/MyMealMate/new_meal/">
+    <form id="meal_form" method="post" action="/MyMealMate/my_meals/new_meal/">
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
