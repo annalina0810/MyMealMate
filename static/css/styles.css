@@ -1,0 +1,84 @@
+@font-face {
+    font-family: 'Atyp';
+    src: url('fonts/AtypText-Reg.otf');
+}
+
+body {
+    margin: 0;
+    font-family: 'Atyp', sans-serif;
+}
+
+nav {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 100px 0 100px;
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensure navigation stays on top */
+    height: 50px;
+    
+}
+
+.nav-links a, .auth-links a {
+    color: #000000;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px 10px;
+    transition: border-color 0.3s ease;
+}
+
+nav a:hover {
+    border-color: #555;
+}
+
+.logo img {
+    width: 150px;
+    height: auto;
+    position: absolute;
+    bottom: -8px;
+}
+
+.nav-links li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.auth-links .signup-link {
+    background-color: darkgreen;
+    color: #ffffff;
+    border: 3px solid darkgreen;
+    border-radius: 16px;
+}
+
+.auth-links .signup-link:hover {
+    background-color: #ffffff;
+    color: darkgreen;
+    border-color: darkgreen;
+}
+
+.nav-links .active{ 
+    color: #ffffff;
+    background-color: #B71D0B;
+    font-size: larger;
+    border: solid #B71D0B;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    padding: 10px 20px 20px 20px;
+}
+
+.main {
+    background-color: #fff;
+    height: 3000px;
+}
+.main-content {
+    background-color: #B71D0B;
+    padding: 20px 50px;
+    margin-bottom: 20px;
+    height: 100%;
+
+}

@@ -11,6 +11,7 @@ import datetime
 
 
 def home(request):
+    context_dict = {'nbar': 'home'}
 
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -39,6 +40,7 @@ def home(request):
 
 
 def signup(request):
+    context_dict = {'nbar': 'signup'}
 
     registered = False
 
@@ -87,31 +89,32 @@ def user_logout(request):
 
 @login_required
 def user_hub(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/user_hub.html', context=context_dict)
+    context_dict = {'nbar': 'user_hub'}
+    
+    response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
 
 @login_required
 
 def profile(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/profile.html', context=context_dict)
+    context_dict = {'nbar': 'profile'}
+    
+    response = render(request, 'MyMealMate/profile.html', context = context_dict)
     return response
 
 @login_required
 
 def edit_profile(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/edit_profile.html', context=context_dict)
+    context_dict = {'nbar': 'edit_profile'}
+    
+    response = render(request, 'MyMealMate/edit_profile.html', context = context_dict)
     return response
 
 @login_required
 
 def my_meals(request):
-    context_dict = {}
+    context_dict = {'nbar': 'my_meals'}
+  
     meals = Meal.objects.all()
     context_dict["meals"] = meals
 
@@ -129,7 +132,6 @@ def my_meals(request):
     return response
 
 @login_required
-
 def new_meal(request):
     form = MealForm()
 
@@ -150,39 +152,38 @@ def new_meal(request):
 
 @login_required
 def meal(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/meal.html', context=context_dict)
+    context_dict = {'nbar': 'meal'}
+    
+    response = render(request, 'MyMealMate/meal.html', context = context_dict)
     return response
 
 @login_required
-
 def edit_meal(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/edit_meal.html', context=context_dict)
+    context_dict = {'nbar': 'edit_meal'}
+    
+    response = render(request, 'MyMealMate/edit_meal.html', context = context_dict)
     return response
 
 @login_required
 
 def shopping_list(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/shopping_list.html', context=context_dict)
+    context_dict = {'nbar': 'shopping_list'}
+    
+    response = render(request, 'MyMealMate/shopping_list.html', context = context_dict)
     return response
 
 @login_required
 
 def edit_shopping_list(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/edit_shopping_list.html', context=context_dict)
+    context_dict = {'nbar': 'edit_shopping_list'}
+    
+    response = render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     return response
 
 @login_required
 
 def schedule(request):
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/schedule.html', context=context_dict)
+    context_dict = {'nbar': 'schedule'}
+    
+    response = render(request, 'MyMealMate/schedule.html', context = context_dict)
     return response
