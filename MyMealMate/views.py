@@ -82,11 +82,6 @@ def user_logout(request):
     logout(request)
     return redirect(reverse('MyMealMate:home'))
 
-    context_dict = {}
-
-    response = render(request, 'MyMealMate/signup.html', context=context_dict)
-    return response
-
 @login_required
 def user_hub(request):
     context_dict = {'nbar': 'user_hub'}
