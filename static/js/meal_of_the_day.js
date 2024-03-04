@@ -11,5 +11,34 @@ xmlhttp.open("GET", url, true);
 xmlhttp.send();
 
 function displayMeal(meal) {
-    document.getElementById("meal_of_the_day").innerHTML = meal.strMeal;	
+    var disp = "";
+    disp += meal.strMeal + "<br>";
+    disp += "<br><img id='thumbnail' src='"+meal.strMealThumb+"'>";
+    document.getElementById("meal_of_the_day").innerHTML = disp;	
 }
+
+function formatNewLines(str) {
+    return str.replace(/\n/g, '<br>');
+}
+
+function getIngredients() {
+
+}
+
+// {"meals":[{
+//     "idMeal":"",
+//     "strMeal":"",
+//     "strDrinkAlternate":,
+//     "strCategory":"",
+//     "strArea":"",
+//     "strInstructions":"",
+//     "strMealThumb":"",
+//     "strTags":"",
+//     "strYoutube":"",
+//     "strIngredient1":"",
+//     "strMeasure1":"",
+//     "strSource":"",
+//     "strImageSource":"",
+//     "strCreativeCommonsConfirmed":"",
+//     "dateModified":
+// }]}
