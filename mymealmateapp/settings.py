@@ -134,6 +134,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
 
 #Login Url 
-LOGIN_URL = 'MyMealMate:login'
+LOGIN_URL = 'MyMealMate:home'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
