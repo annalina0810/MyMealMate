@@ -7,6 +7,8 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>Meal</h1>
-<a href="{% url 'MyMealMate:edit_meal' %}">Edit Meal</a>
+<h1>{{meal.name}}</h1>
+<a href="{% url 'MyMealMate:edit_meal' meal.slug %}">Edit Meal</a>
+<a href="{% url 'MyMealMate:my_meals' %}">All Meals</a>
+
 {% endblock %}
