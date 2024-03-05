@@ -13,7 +13,7 @@ xmlhttp.send();
 function displayMeal(meal) {
     var disp = "";
     disp += meal.strMeal + "<br>";
-    disp += "<br><img id='thumbnail' src='"+meal.strMealThumb+"'>";
+    disp += "<br><img class='thumbnail' src='"+meal.strMealThumb+"'>";
     document.getElementById("meal_of_the_day").innerHTML = disp;	
 }
 

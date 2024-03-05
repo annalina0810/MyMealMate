@@ -1,9 +1,43 @@
-#meal_of_the_day {
-    height:95%;
-    width:47.5%;
+.meal_of_the_day,.login_signup {
+    display: inline-block;
+    border: 1% solid black;
+    height: 80vh;
+    box-sizing: border-box;
+    vertical-align: top;
 }
 
-#thumbnail {
-    width: 250px;
-    height: 250px;
+.login_signup {
+    width:64%;
+}
+
+.meal_of_the_day {
+    width:32%;
+}
+
+.thumbnail {
+    aspect-ratio: 1 / 1;
+    width: 98%;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    border: 1% solid black;
+    box-sizing: border-box;
+    width: 48%;
+}
+
+.selected {
+    background-color: green;
 }
