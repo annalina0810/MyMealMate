@@ -92,8 +92,11 @@ def user_hub(request):
 @login_required
 
 def profile(request):
+    user = request.user
+    picture = UserProfile.objects.get(user=user).picture
     context_dict = {'nbar': 'profile', 
-                    'user': request.user}
+                    'user': user,
+                    'profile_picture': picture}
     
     response = render(request, 'MyMealMate/profile.html', context = context_dict)
     return response
