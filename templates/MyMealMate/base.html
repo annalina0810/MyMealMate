@@ -7,10 +7,13 @@
       <title>
         MyMealMate -
         {% block title_block %}
-          Does this work?
         {% endblock %}
       </title>
       <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+      {% block stylesheet_block %}
+      {% endblock %}
+      {% block script_block %}
+      {% endblock %}
   </head>
 
   <body>
