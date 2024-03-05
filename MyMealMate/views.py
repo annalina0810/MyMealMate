@@ -13,6 +13,9 @@ import datetime
 def home(request):
     context_dict = {'nbar': 'home'}
 
+    if request.user.is_authenticated:
+        return redirect(reverse('MyMealMate:user_hub'))
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -33,7 +36,7 @@ def home(request):
             return HttpResponse("Invalid login details supplied.")
         
     else:
-        return render(request, 'MyMealMate/home.html')
+        return render(request, 'MyMealMate/home.html', context=context_dict)
 
 
 def signup(request):
@@ -82,6 +85,13 @@ def user_logout(request):
     return redirect(reverse('MyMealMate:home'))
 
 @login_required
+def delete_account(request):
+
+    user = request.user
+    user.delete()
+    return redirect(reverse('MyMealMate:home'))
+
+@login_required
 def user_hub(request):
     context_dict = {'nbar': 'user_hub',
                     'user': request.user}
@@ -90,7 +100,6 @@ def user_hub(request):
     return response
 
 @login_required
-
 def profile(request):
     user = request.user
     picture = UserProfile.objects.get(user=user).picture
@@ -102,9 +111,8 @@ def profile(request):
     return response
 
 @login_required
-
 def edit_profile(request):
-    context_dict = {'nbar': 'edit_profile'}
+    context_dict = {'nbar': 'profile'}
     
     response = render(request, 'MyMealMate/edit_profile.html', context = context_dict)
     return response
@@ -171,7 +179,7 @@ def shopping_list(request):
 
 @login_required
 def edit_shopping_list(request):
-    context_dict = {'nbar': 'edit_shopping_list'}
+    context_dict = {'nbar': 'shopping_list'}
     
     response = render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     return response

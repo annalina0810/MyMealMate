@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
-
+{% block script_block %}
+    <script src="{% static 'js/meal_of_the_day.js' %}"></script>
+{% endblock %}
 {% block title_block %}
     Profile
 {% endblock %}
@@ -9,13 +11,20 @@
 {% block body_block %}
 <h1>My Profile</h1>
 
-    <div>
+    <p>
         First name: {{ user.first_name }} <br />
         Username: {{ user.username }}<br />
         Email: {{ user.email }} <br />
         Profile Picture: <br/>
         <img src="{{ profile_picture.url }}" alt="Profile Picture" />
+    </p>
+    <ul>
+        <li><a href="{% url 'MyMealMate:logout' %}">Logout</a></li>
 
-    </div>
-<a href="{% url 'MyMealMate:edit_profile' %}">Edit Profile</a>
+        <li><a href="{% url 'MyMealMate:edit_profile' %}">Edit Profile</a></li>
+    </ul>
+    <form action="{% url 'MyMealMate:delete_account' %}" method="POST" onsubmit="confirmAccountDeletion()">
+        {% csrf_token %}
+        <input type="submit" value="Delete Account">
+    </form>
 {% endblock %}
