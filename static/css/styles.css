@@ -73,8 +73,9 @@ nav a:hover {
 
 .main {
     background-color: #fff;
-    height: 3000px;
+    box-sizing: border-box;
 }
+
 .main-content {
     background-color: #B71D0B;
     padding: 20px 50px;

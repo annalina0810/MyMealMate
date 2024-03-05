@@ -1,24 +1,20 @@
 <!DOCTYPE html>
-{% extends 'MyMealMate/base.html' %}
+{% extends 'MyMealMate/home_base.html' %}
 {% load staticfiles %}
 {% load MyMealMate_template_tags %}
-
 
 {% block title_block %}
     Login
 {% endblock %}
-            
-{% block stylesheet_block %}
-    <link rel="stylesheet" href="{% static 'css/home_styles.css' %}">
-{% endblock %}
 
-{% block script_block %}
-    <script src="{% static 'js/meal_of_the_day.js' %}"></script>
-{% endblock %}
+{% block credentials %}
 
-
-{% block body_block %}
-<h1>Login</h1>
+<div class="login_signup_nav">
+    <ul>
+        <li class="selected"><h1>Login</h1></li>
+        <li><a href="{% url 'MyMealMate:signup'%}"><h1>Signup</h1></a></li>
+    </ul>
+</div>
 
 <form id="login_form" method="post" action="{% url 'MyMealMate:home' %}">
     {% csrf_token %}
@@ -30,10 +26,6 @@
 
 </form>
 <br/>
-
-<ul>
-    <li><a href="{% url 'MyMealMate:signup'%}">Signup</a></li>
-</ul>
 
 {% endblock %}
 
