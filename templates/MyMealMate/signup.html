@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-{% extends 'MyMealMate/base.html' %}
+{% extends 'MyMealMate/home_base.html' %}
 {% load staticfiles %}
+{% load MyMealMate_template_tags %}
 
 {% block title_block %}
     Sign Up
 {% endblock %}
 
-{% block body_block %}
-    <h1>Sign Up</h1>
+{% block credentials %}
+
+    <div class="login_signup_nav">
+        <ul>
+            <li><a href="{% url 'MyMealMate:home' %}"><h1>Login</h1></a></li>
+            <li class="selected"><h1>Signup</h1></li>
+        </ul>
+    </div>
+    
     <form id="user_form" method="post" action="{% url 'MyMealMate:signup' %}" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -17,7 +25,5 @@
         <input type="submit" name="submit" value="Sign Up" />
     </form>
     <br/>
-    <ul>
-        <li><a href="{% url 'MyMealMate:home' %}">Login</a></li>
-    </ul>
+
 {% endblock %}
