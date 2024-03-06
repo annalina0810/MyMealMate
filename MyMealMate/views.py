@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from MyMealMate.forms import UserForm, UserProfileForm
+from MyMealMate.forms import UserForm, UserProfileForm, ShoppingListForm
 from MyMealMate.models import *
 from MyMealMate.forms import MealForm
 import datetime
@@ -219,8 +219,23 @@ def clear_completed(request):
 
 @login_required
 def edit_shopping_list(request):
-    context_dict = {'nbar': 'shopping_list'}
-    
+    # ToDo: don't allow unit without amount
+    shopping_list = ShoppingList.objects.get(user=request.user)
+    items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
+    form = ShoppingListForm()
+
+    if request.method == 'POST':
+        form = ShoppingListForm(request.POST)
+        if form.is_valid():
+            amount = int(form.data["amount"]) if form.data["amount"] != "" else 0
+            item = shopping_list.add_item(form.data['name'], amount, form.data["unit"])
+
+            return redirect(reverse('MyMealMate:edit_shopping_list'))
+    else:
+        print(form.errors)
+
+    context_dict = {'nbar': 'shopping_list', "items": items, "form": form}
+
     response = render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     return response
 
