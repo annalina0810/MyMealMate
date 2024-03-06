@@ -25,5 +25,9 @@
   {%endif%}
 </ul>
 <br/>
-<div><a href="{% url 'MyMealMate:edit_shopping_list' %}">Edit Shopping List</a></div>
+<div>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_shopping_list' %}';">Add Items</button>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_all' %}';">Clear all</button>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_completed' %}';">Clear completed</button>
+</div>
 {% endblock %}

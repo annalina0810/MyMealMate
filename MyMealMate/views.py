@@ -204,6 +204,22 @@ def clicked_item(request, item_id):
 
 
 @login_required
+def clear_all(request):
+    shopping_list = ShoppingList.objects.get(user=request.user)
+    ShoppingListItem.objects.filter(shoppingList=shopping_list).delete()
+
+    return redirect(reverse('MyMealMate:shopping_list'))
+
+
+@login_required
+def clear_completed(request):
+    shopping_list = ShoppingList.objects.get(user=request.user)
+    ShoppingListItem.objects.filter(shoppingList=shopping_list, checked=True).delete()
+
+    return redirect(reverse('MyMealMate:shopping_list'))
+
+
+@login_required
 def edit_shopping_list(request):
     context_dict = {'nbar': 'shopping_list'}
     
