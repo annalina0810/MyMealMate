@@ -183,10 +183,24 @@ def edit_meal(request, meal_name_slug):
 
 @login_required
 def shopping_list(request):
-    context_dict = {'nbar': 'shopping_list'}
-    
+    shopping_list = ShoppingList.objects.get(user=request.user)
+    items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
+
+    context_dict = {'nbar': 'shopping_list', "items": items}
     response = render(request, 'MyMealMate/shopping_list.html', context = context_dict)
     return response
+
+
+@login_required
+def clicked_item(request, item_id):
+    item = ShoppingListItem.objects.get(id=item_id)
+
+    if request.method == 'POST':
+        item.checked = not item.checked
+        item.save()
+        return redirect(reverse('MyMealMate:shopping_list'))
+
+    return render(request, 'MyMealMate/shopping_list.html')
 
 
 @login_required
