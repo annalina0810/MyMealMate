@@ -9,7 +9,7 @@
         {% block title_block %}
         {% endblock %}
       </title>
-      <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+      <link rel="stylesheet" href="{% static 'css/base_styles.css' %}">
       {% block stylesheet_block %}
       {% endblock %}
       {% block script_block %}
@@ -48,11 +48,5 @@
       {% endblock %}
       </div>
     </div>
-    <hr />
-    {% if user.is_authenticated %}  
-      <footer>
-        <a href="{% url 'MyMealMate:logout' %}">Logout</a>
-      </footer>
-    {% endif %}
   </body>
 </html>

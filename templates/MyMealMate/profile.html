@@ -6,6 +6,10 @@
     <script src="{% static 'js/confirm_account_deletion.js' %}"></script>
 {% endblock %}
 
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/profile_styles.css' %}">
+{% endblock %}
+
 {% block title_block %}
     Profile
 {% endblock %}
@@ -17,8 +21,13 @@
         First name: {{ user.first_name }} <br />
         Username: {{ user.username }}<br />
         Email: {{ user.email }} <br />
-        Profile Picture: <br/>
-        <img src="{{ profile_picture.url }}" alt="Profile Picture" />
+        Profile Picture: 
+        {% if not profile_picture %}
+            No profile picture uploaded
+        {% else %}
+            <br/>
+            <img id="pfp" src="{{ profile_picture.url }}" alt="Profile Picture" />
+        {% endif %}
     </p>
     <ul>
         <li><a href="{% url 'MyMealMate:logout' %}">Logout</a></li>

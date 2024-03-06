@@ -3,6 +3,10 @@
     src: url('fonts/AtypText-Reg.otf');
 }
 
+html, body, .main {
+    height: 100%;
+}
+
 body {
     margin: 0;
     font-family: 'Atyp', sans-serif;
@@ -73,13 +77,10 @@ nav a:hover {
 
 .main {
     background-color: #fff;
-    box-sizing: border-box;
 }
 
 .main-content {
     background-color: #B71D0B;
     padding: 20px 50px;
-    margin-bottom: 20px;
-    height: 100%;
-
+    height: calc(100% - 50px);
 }
