@@ -127,18 +127,8 @@ def edit_profile(request):
 def my_meals(request):
     context_dict = {'nbar': 'my_meals'}
   
-    meals = Meal.objects.all()
+    meals = Meal.objects.filter(user=request.user)
     context_dict["meals"] = meals
-
-    # see if scheduling and unscheduling works:
-    user = get_user_model().objects.filter(username='test_user')[0]
-    user_schedule = Schedule.objects.get(user=user)
-    today = Day.objects.all()[0]
-    tomorrow = Day(schedule=user_schedule, date=datetime.date.today() + datetime.timedelta(days=1))
-    tomorrow.save()
-    user_schedule.scheduleMeal(tomorrow, meals.get(name="Spaghetti Bolognese"))
-    print(user_schedule.unscheduleMeal(today, meals.get(name="Pizza")))
-    user_schedule.save()
 
     response = render(request, 'MyMealMate/my_meals.html', context=context_dict)
     return response
@@ -167,7 +157,15 @@ def new_meal(request):
 def meal(request, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
     context_dict = {'nbar': 'meal', "meal": meal}
-
+    """"
+    # this is how you'd schedule/unschedule a meal for tomorrow
+    user_schedule = Schedule.objects.get(user=request.user)
+    tomorrow = Day(schedule=user_schedule, date=datetime.date.today() + datetime.timedelta(days=1))
+    tomorrow.save()
+    user_schedule.scheduleMeal(tomorrow, meal)
+    #user_schedule.unscheduleMeal(tomorrow, meal)
+    user_schedule.save()
+    """
     response = render(request, 'MyMealMate/meal.html', context = context_dict)
     return response
 
