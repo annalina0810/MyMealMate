@@ -4,9 +4,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from MyMealMate.forms import UserForm, UserProfileForm
+from MyMealMate.forms import UserForm, UserProfileForm, MealForm, EditProfileForm, EditPictureForm
 from MyMealMate.models import *
-from MyMealMate.forms import MealForm
 import datetime
 
 
@@ -29,12 +28,14 @@ def home(request):
                 return redirect(reverse('MyMealMate:user_hub'))
             
             else:
-                return HttpResponse("Your MyMealMate account is disabled.")
-            
+                context_dict['error_message'] = "Your MyMealMate account is disabled."
+                return render(request, 'MyMealMate/home.html', context=context_dict)
+
         else:
             print("Invalid login details.")
-            return HttpResponse("Invalid login details supplied.")
-        
+            context_dict['error_message'] = "Invalid login details supplied."
+            return render(request, 'MyMealMate/home.html', context=context_dict)
+
     else:
         return render(request, 'MyMealMate/home.html', context=context_dict)
 
@@ -112,7 +113,33 @@ def profile(request):
 
 @login_required
 def edit_profile(request):
-    context_dict = {'nbar': 'profile'}
+    user = request.user
+    userProfile = UserProfile.objects.get(user=user)
+        
+    if request.method == "POST":
+        profile_form = EditProfileForm(request.POST, instance=user)
+        picture_form = EditPictureForm(request.POST, instance=userProfile)
+
+        if profile_form.is_valid() and picture_form.is_valid():
+
+            if 'picture' in request.FILES:
+                userProfile.picture = request.FILES['picture']
+            else:
+                userProfile.picture = "default_profile.jpg"
+
+            profile_form.save()
+            picture_form.save()
+            return redirect(reverse('MyMealMate:profile'))
+    
+    else:
+        profile_form = EditProfileForm(instance=user)
+        picture_form = EditPictureForm(instance=userProfile)
+
+    context_dict = {'nbar': 'profile',
+                    'user': user,
+                    'profile_picture': userProfile.picture,
+                    'edit_profile_form': profile_form,
+                    'edit_picture_form': picture_form,}
     
     response = render(request, 'MyMealMate/edit_profile.html', context = context_dict)
     return response
