@@ -83,3 +83,15 @@ nav a:hover {
     height: 100%;
 
 }
+
+.button {
+      display: inline-block;
+      text-align: center;
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from MyMealMate.models import UserProfile
-from MyMealMate.models import Meal
+from MyMealMate.models import Meal, ShoppingListItem
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -43,3 +43,14 @@ class MealForm(forms.ModelForm):
     class Meta:
         model = Meal
         fields = ('name',)
+
+
+class ShoppingListForm(forms.ModelForm):
+    name = forms.CharField(max_length=30, help_text="Name:")
+    amount = forms.IntegerField(help_text="Amount:", required=False)
+    unit = forms.CharField(max_length=30, help_text="Unit:", required=False)
+    checked = forms.BooleanField(widget=forms.HiddenInput(), required=False)
+
+    class Meta:
+        model = ShoppingListItem
+        fields = ('name', "amount", "unit", "checked",)
