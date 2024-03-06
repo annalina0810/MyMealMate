@@ -10,11 +10,11 @@
 <h1>My Meals</h1>
     {% if meals %}
     <ul>
-        {% for m in meals %}
-        {%if m.url and m.instructions%}
-            <li>{{m.name}} ||  <a href="{{m.url}}">Recipe</a> || instructions: {{m.instructions}} || times scheduled: {{m.schedCounter}}</li>
+        {% for meal in meals %}
+        {%if meal.url and meal.instructions%}
+            <li> <a href ="{% url 'MyMealMate:meal' meal.slug  %}" >{{meal.name}} </a> ||  <a href="{{m.url}}">Recipe</a> || instructions: {{meal.instructions}} || times scheduled: {{meal.schedCounter}}</li>
         {%else%}
-            <li>{{m.name}}  || times scheduled: {{m.schedCounter}}</li>
+            <li> <a href ="{% url 'MyMealMate:meal' meal.slug  %}" >{{meal.name}} </a>  || times scheduled: {{meal.schedCounter}}</li>
         {%endif%}
         {% endfor %}
     </ul>

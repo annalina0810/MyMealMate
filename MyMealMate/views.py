@@ -79,10 +79,12 @@ def signup(request):
     response = render(request, 'MyMealMate/signup.html', context = context_dict)
     return response
 
+
 @login_required
 def user_logout(request):
     logout(request)
     return redirect(reverse('MyMealMate:home'))
+
 
 @login_required
 def delete_account(request):
@@ -91,6 +93,7 @@ def delete_account(request):
     user.delete()
     return redirect(reverse('MyMealMate:home'))
 
+
 @login_required
 def user_hub(request):
     context_dict = {'nbar': 'user_hub',
@@ -98,6 +101,7 @@ def user_hub(request):
     
     response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
+
 
 @login_required
 def profile(request):
@@ -110,12 +114,14 @@ def profile(request):
     response = render(request, 'MyMealMate/profile.html', context = context_dict)
     return response
 
+
 @login_required
 def edit_profile(request):
     context_dict = {'nbar': 'profile'}
     
     response = render(request, 'MyMealMate/edit_profile.html', context = context_dict)
     return response
+
 
 @login_required
 def my_meals(request):
@@ -137,6 +143,7 @@ def my_meals(request):
     response = render(request, 'MyMealMate/my_meals.html', context=context_dict)
     return response
 
+
 @login_required
 def new_meal(request):
     form = MealForm()
@@ -149,7 +156,7 @@ def new_meal(request):
             meal.user = request.user
             meal.save()
             print(meal, meal.slug)
-            return redirect('/MyMealMate/my_meals/')
+            return redirect(reverse('MyMealMate:meal', kwargs={'meal_name_slug': meal.slug}))
     else:
         print(form.errors)
 
@@ -157,25 +164,44 @@ def new_meal(request):
 
 
 @login_required
-def meal(request):
-    context_dict = {'nbar': 'meal'}
-    
+def meal(request, meal_name_slug):
+    meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
+    context_dict = {'nbar': 'meal', "meal": meal}
+
     response = render(request, 'MyMealMate/meal.html', context = context_dict)
     return response
 
+
 @login_required
-def edit_meal(request):
-    context_dict = {'nbar': 'edit_meal'}
-    
+def edit_meal(request, meal_name_slug):
+    meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
+    context_dict = {'nbar': 'edit_meal', "meal": meal}
+
     response = render(request, 'MyMealMate/edit_meal.html', context = context_dict)
     return response
 
+
 @login_required
 def shopping_list(request):
-    context_dict = {'nbar': 'shopping_list'}
-    
+    shopping_list = ShoppingList.objects.get(user=request.user)
+    items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
+
+    context_dict = {'nbar': 'shopping_list', "items": items}
     response = render(request, 'MyMealMate/shopping_list.html', context = context_dict)
     return response
+
+
+@login_required
+def clicked_item(request, item_id):
+    item = ShoppingListItem.objects.get(id=item_id)
+
+    if request.method == 'POST':
+        item.checked = not item.checked
+        item.save()
+        return redirect(reverse('MyMealMate:shopping_list'))
+
+    return render(request, 'MyMealMate/shopping_list.html')
+
 
 @login_required
 def edit_shopping_list(request):
@@ -183,6 +209,7 @@ def edit_shopping_list(request):
     
     response = render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     return response
+
 
 @login_required
 def schedule(request):
