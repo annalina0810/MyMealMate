@@ -68,6 +68,8 @@ def signup(request):
 
             profile.save()
             registered = True
+            login(request, user)
+
             return redirect(reverse('MyMealMate:user_hub'))
         else:
             print(user_form.errors, profile_form.errors)
@@ -92,14 +94,16 @@ def user_logout(request):
 
 @login_required
 def user_hub(request):
-    context_dict = {'nbar': 'user_hub'}
+    context_dict = {'nbar': 'user_hub',
+                    'user': request.user}
     
     response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
 
 @login_required
 def profile(request):
-    context_dict = {'nbar': 'profile'}
+    context_dict = {'nbar': 'profile', 
+                    'user': request.user}
     
     response = render(request, 'MyMealMate/profile.html', context = context_dict)
     return response
