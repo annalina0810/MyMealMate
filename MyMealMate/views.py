@@ -305,7 +305,7 @@ def set_meal_cookie(request):
     response_from_api = conn.getresponse()
 
     if response_from_api.status == 200:
-        request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]["strMeal"]
+        request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
         request.session['last_set'] = str(datetime.now())
 
     conn.close()
