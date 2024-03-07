@@ -7,11 +7,17 @@ from django.contrib.auth.decorators import login_required
 from MyMealMate.forms import UserForm, UserProfileForm
 from MyMealMate.models import *
 from MyMealMate.forms import MealForm
-import datetime
+from datetime import datetime,timedelta
+from http import client
+from http import cookiejar
+import json
+import http
 
 
 def home(request):
     context_dict = {'nbar': 'home'}
+    set_meal_cookie(request)
+    context_dict['meal_of_the_day'] = request.session['meal_of_the_day']
 
     if request.user.is_authenticated:
         return redirect(reverse('MyMealMate:user_hub'))
@@ -70,10 +76,12 @@ def signup(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
+    set_meal_cookie(request)
     context_dict = {'user_form': user_form,
                     'profile_form':profile_form,
-                    'registered': registered,}
-    
+                    'registered': registered,
+                    'meal_of_the_day': request.session['meal_of_the_day']}
+
     response = render(request, 'MyMealMate/signup.html', context = context_dict)
     return response
 
@@ -176,3 +184,32 @@ def schedule(request):
     
     response = render(request, 'MyMealMate/schedule.html', context = context_dict)
     return response
+
+
+def get_server_side_cookie(request, cookie, default_val=None):
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val
+    return val
+
+def set_meal_cookie(request):
+    meal_cookie = get_server_side_cookie(request, 'meal_cookie', "Creamy Tomato Soup")
+    last_set = get_server_side_cookie(request, 'last_set')
+    
+    if meal_cookie and last_set:
+        last_set_timestamp = datetime.strptime(last_set, "%Y-%m-%d %H:%M:%S.%f")
+        today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        if last_set_timestamp >= today_start:
+            return None
+
+    conn = http.client.HTTPSConnection("www.themealdb.com")
+    conn.request("GET", "/api/json/v1/1/random.php")
+    response_from_api = conn.getresponse()
+
+    if response_from_api.status == 200:
+        request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]["strMeal"]
+        request.session['last_set'] = str(datetime.now())
+
+    conn.close()
+
+    
