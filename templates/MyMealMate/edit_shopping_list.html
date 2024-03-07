@@ -8,4 +8,31 @@
 
 {% block body_block %}
 <h1>Edit Shopping List</h1>
+    {%if items%}
+        {%for item in items%}
+            {% if item.checked %}
+            <s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s>
+            {%else%}
+            {{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
+            {%endif%}<br/>
+        {%endfor%}
+    {%endif%}
+    <br/>
+    Add a new Item:
+    <form id="shopping_list_form" method="post" action="{%url 'MyMealMate:edit_shopping_list' %}">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            {% endfor %}
+            <input class="button" type="submit" name="submit" value="Add Item" />
+    </form>
+<br/>
+<div>
+    <button class="button" onclick="window.location.href ='{% url 'MyMealMate:shopping_list' %}';">Done</button>
+</div>
 {% endblock %}
