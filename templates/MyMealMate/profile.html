@@ -2,9 +2,6 @@
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
 
-{% block script_block %}
-    <script src="{% static 'js/confirm_account_deletion.js' %}"></script>
-{% endblock %}
 
 {% block stylesheet_block %}
     <link rel="stylesheet" href="{% static 'css/profile_styles.css' %}">
@@ -34,8 +31,5 @@
 
         <li><a href="{% url 'MyMealMate:edit_profile' %}">Edit Profile</a></li>
     </ul>
-    <form action="{% url 'MyMealMate:delete_account' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Delete Account" onclick="return confirmAccountDeletion()">
-    </form>
+    
 {% endblock %}

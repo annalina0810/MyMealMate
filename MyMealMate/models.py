@@ -52,11 +52,14 @@ class ShoppingList(models.Model):
         for item in initial_items:  # iterate over all items with the same name
             if item.unit == unit:  # if one of them has the same unit, add the amount
                 item.amount += amount
-                return item.save()
+                item.save()
+                return item
 
         # if we didn't find another item with the same name & unit, add a new ShoppingListItem
         new_item = ShoppingListItem(shoppingList=self, name=name, amount=amount, unit=unit)
-        return new_item.save()
+
+        new_item.save()
+        return new_item
 
     def add_ingredient(self, ingredient):
         return self.add_item(ingredient.name, ingredient.amount, ingredient.unit)

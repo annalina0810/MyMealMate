@@ -8,5 +8,25 @@
 
 {% block body_block %}
 <h1>Shopping List</h1>
-<li><a href="{% url 'MyMealMate:edit_shopping_list' %}">Edit Shopping List</a></li>
+    {%if items%}
+        {%for item in items%}
+            <form action="{%url 'MyMealMate:clicked' item.id %}" method="POST">
+                {% csrf_token %}
+                <label><input type="checkbox" value="{{item.id}}" onchange="this.form.submit()"  {%if item.checked%} checked {%endif%} />
+                    {% if item.checked %}
+                    <s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s>
+                    {%else%}
+                    {{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
+                    {%endif%}</label> <br/>
+            </form>
+        {%endfor%}
+    {%else%}
+    <ul> <li><strong>You currently don't have any items on your list.</strong></li></ul>
+    {%endif%}
+<br/>
+<div>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_shopping_list' %}';">Add Items</button>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_all' %}';">Clear all</button>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_completed' %}';">Clear completed</button>
+</div>
 {% endblock %}
