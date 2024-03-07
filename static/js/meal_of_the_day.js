@@ -2,9 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var meal_cookie = getMealCookie('meal_cookie');
     var meal_cookie = document.getElementsByClassName('meal_of_the_day')[0].getAttribute('meal_of_the_day');
     var xmlhttp	= new XMLHttpRequest();	
-    if (meal_cookie != null) {
-        var url	= "https://www.themealdb.com/api/json/v1/1/search.php?s="+meal_cookie.replaceAll("\"", "");
-    }
+    var url	= "https://www.themealdb.com/api/json/v1/1/search.php?s="+meal_cookie.replaceAll("\"", "");
     xmlhttp.onreadystatechange = function() {	
         if (this.readyState == 4 && this.status == 200) {	
             var meal = JSON.parse(this.responseText).meals[0];
