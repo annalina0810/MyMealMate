@@ -8,6 +8,12 @@
 {% endblock %}
 
 {% block credentials %}
+<script>
+    if ("{{ error_message }}") {
+        alert("{{ error_message }}");
+    }
+</script>
+    
 
 <div class="login_signup_nav">
     <ul>

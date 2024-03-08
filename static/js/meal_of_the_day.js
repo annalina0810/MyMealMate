@@ -1,27 +1,10 @@
-var xmlhttp	= new XMLHttpRequest();	
-var url	= "https://www.themealdb.com/api/json/v1/1/random.php";	
-xmlhttp.onreadystatechange = function() {	
-    if (this.readyState == 4 && this.status == 200) {	
-        var meal = JSON.parse(this.responseText).meals[0];
-        displayMeal(meal);
-    }
-};
+document.addEventListener('DOMContentLoaded', function() {
+    var meal_cookie = document.getElementsByClassName('meal_of_the_day')[0].getAttribute('meal_of_the_day');
+    var meal = JSON.parse(meal_cookie.replaceAll("'","\"").replaceAll("None","null"));
+    getIngredients(meal);
+});
 
-xmlhttp.open("GET", url, true);
-xmlhttp.send();
-
-function displayMeal(meal) {
-    var disp = "";
-    disp += meal.strMeal + "<br>";
-    disp += "<br><img class='thumbnail' src='"+meal.strMealThumb+"'>";
-    document.getElementById("meal_of_the_day").innerHTML = disp;	
-}
-
-function formatNewLines(str) {
-    return str.replace(/\n/g, '<br>');
-}
-
-function getIngredients() {
+function getIngredients(meal) {
 
 }
 

@@ -16,6 +16,24 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ('picture', )
 
+    def save(self, commit=True):
+        userProfile = super().save(commit=False)
+        if not self.cleaned_data.get('picture'):
+            userProfile.picture = "default_profile.jpg"
+        if commit:
+            userProfile.save()
+        return userProfile
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields =('username', 'first_name', 'email',)
+
+class EditPictureForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('picture',)
+
 
 class MealForm(forms.ModelForm):
     name = forms.CharField(max_length=128, help_text="Name (required): ")
