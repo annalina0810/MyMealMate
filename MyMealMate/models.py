@@ -16,7 +16,7 @@ class UserProfile(models.Model):
 class Meal(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
-    image = models.ImageField(upload_to="meal_images", blank=True)  # change to blank=False?
+    image = models.ImageField(upload_to="meal_images", blank=True, default="default_profile.jpg")  # change to blank=False?
     url = models.URLField(blank=True)
     instructions = models.TextField(blank=True)
     schedCounter = models.IntegerField(default=0)

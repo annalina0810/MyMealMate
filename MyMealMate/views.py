@@ -144,7 +144,13 @@ def new_meal(request):
             # Save the new meal to the database
             meal = form.save(commit=False)
             meal.user = request.user
+
+            if 'image' in request.FILES:
+                meal.image = request.FILES['image']
+                print(f"Image uploaded for meal {meal.name}: {meal.image.url}")
+
             meal.save()
+
             print(meal, meal.slug)
             return redirect(reverse('MyMealMate:meal', kwargs={'meal_name_slug': meal.slug}))
     else:
@@ -156,6 +162,7 @@ def new_meal(request):
 @login_required
 def meal(request, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
+    
     context_dict = {'nbar': 'meal', "meal": meal}
     """"
     # this is how you'd schedule/unschedule a meal for tomorrow
