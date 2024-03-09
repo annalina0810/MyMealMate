@@ -208,7 +208,7 @@ def edit_meal(request, meal_name_slug):
 
 @login_required
 def shopping_list(request):
-    shopping_list = ShoppingList.objects.get(user=request.user)
+    shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
     items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
 
     context_dict = {'nbar': 'shopping_list', "items": items}
