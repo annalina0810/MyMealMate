@@ -6,11 +6,18 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from MyMealMate.forms import *
 from MyMealMate.models import *
-import datetime
+from MyMealMate.forms import MealForm
+from datetime import datetime,timedelta
+from http import client
+from http import cookiejar
+import json
+import http
 
 
 def home(request):
     context_dict = {'nbar': 'home'}
+    set_meal_cookie(request)
+    context_dict['meal_of_the_day'] = request.session['meal_of_the_day']
 
     if request.user.is_authenticated:
         return redirect(reverse('MyMealMate:user_hub'))
@@ -73,23 +80,28 @@ def signup(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
+    set_meal_cookie(request)
     context_dict = {'user_form': user_form,
                     'profile_form':profile_form,
-                    'registered': registered,}
-    
+                    'registered': registered,
+                    'meal_of_the_day': request.session['meal_of_the_day']}
+
     response = render(request, 'MyMealMate/signup.html', context = context_dict)
     return response
 
 
 @login_required
 def user_logout(request):
+    meal_of_the_day = request.session.get('meal_of_the_day', None)
+    last_set = request.session.get('last_set', None)
     logout(request)
+    request.session['meal_of_the_day'] = meal_of_the_day
+    request.session['last_set'] = last_set
     return redirect(reverse('MyMealMate:home'))
 
 
 @login_required
 def delete_account(request):
-
     user = request.user
     user.delete()
     return redirect(reverse('MyMealMate:home'))
@@ -97,9 +109,12 @@ def delete_account(request):
 
 @login_required
 def user_hub(request):
+    set_meal_cookie(request)
+    meal_of_the_day = request.session['meal_of_the_day']
     context_dict = {'nbar': 'user_hub',
-                    'user': request.user}
-    
+                    'user': request.user,
+                    'meal_of_the_day': meal_of_the_day,
+                    'has_meal_of_the_day': userHasMeal(request,meal_of_the_day['strMeal'])}
     response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
 
@@ -273,3 +288,49 @@ def schedule(request):
     
     response = render(request, 'MyMealMate/schedule.html', context = context_dict)
     return response
+
+@login_required
+def add_meal_of_the_day(request):
+    meal_of_the_day = request.session.get('meal_of_the_day', None)
+    if not userHasMeal(request,meal_of_the_day['strMeal']):
+        meal = Meal()
+        meal.user = request.user
+        meal.name = meal_of_the_day['strMeal']
+        meal.image = meal_of_the_day['strMealThumb']
+        meal.url = meal_of_the_day['strSource']
+        meal.instructions = meal_of_the_day['strInstructions']
+        meal.save()
+        return redirect(reverse('MyMealMate:my_meals'))
+    return redirect(reverse('MyMealMate:user_hub'))
+
+@login_required
+def userHasMeal(request,meal_name):
+    if Meal.objects.filter(user=request.user).filter(name=meal_name).exists():
+        return True
+    return False
+
+def get_server_side_cookie(request, cookie, default_val=None):
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val
+    return val
+
+def set_meal_cookie(request):
+    meal_cookie = get_server_side_cookie(request, 'meal_of_the_day', "Creamy Tomato Soup")
+    last_set = get_server_side_cookie(request, 'last_set')
+    
+    if meal_cookie and last_set:
+        last_set_timestamp = datetime.strptime(last_set, "%Y-%m-%d %H:%M:%S.%f")
+        today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        if last_set_timestamp >= today_start:
+            return None
+
+    conn = http.client.HTTPSConnection("www.themealdb.com")
+    conn.request("GET", "/api/json/v1/1/random.php")
+    response_from_api = conn.getresponse()
+
+    if response_from_api.status == 200:
+        request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
+        request.session['last_set'] = str(datetime.now())
+
+    conn.close()   

@@ -14,9 +14,10 @@
 
 {% block body_block %}
 
-<div class="meal_of_the_day">
-<h1>Meal of The Day</h1>
-<div id="meal_of_the_day"></div>
+<div class="meal_of_the_day" meal_of_the_day="{{ meal_of_the_day }}">
+<h1>Meal of The Day:<br/>{{ meal_of_the_day.strMeal }}</h1>
+<br><img class='thumbnail' src="{{ meal_of_the_day.strMealThumb }}"/>
+<ul id="ingredients"></ul>
 </div>
 
 <div class="login_signup">
