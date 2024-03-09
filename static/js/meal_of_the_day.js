@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var meal_cookie = document.getElementsByClassName('meal_of_the_day')[0].getAttribute('meal_of_the_day');
     var meal = JSON.parse(meal_cookie.replaceAll("'","\"").replaceAll("None","null"));
     meal = collectIngredients(meal);
-    displayIngredients(meal)
+    displayIngredients(meal);
 });
 
 function displayIngredients(meal) {
@@ -60,6 +60,12 @@ function parseMeasurement(measurement) {
     return { amount: amount, unit: unit };
 }
 
+function displayAddButton(has_meal_of_the_day) {
+    var form = document.getElementsByClassName('add_meal_of_the_day')[0];
+    if (has_meal_of_the_day == "True") {
+        form.style.display = 'none';
+    }
+}
 
 
 // {"meals":[{
