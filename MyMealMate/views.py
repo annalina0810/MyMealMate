@@ -92,13 +92,16 @@ def signup(request):
 
 @login_required
 def user_logout(request):
+    meal_of_the_day = request.session.get('meal_of_the_day', None)
+    last_set = request.session.get('last_set', None)
     logout(request)
+    request.session['meal_of_the_day'] = meal_of_the_day
+    request.session['last_set'] = last_set
     return redirect(reverse('MyMealMate:home'))
 
 
 @login_required
 def delete_account(request):
-
     user = request.user
     user.delete()
     return redirect(reverse('MyMealMate:home'))
@@ -106,9 +109,12 @@ def delete_account(request):
 
 @login_required
 def user_hub(request):
+    set_meal_cookie(request)
+    meal_of_the_day = request.session['meal_of_the_day']
     context_dict = {'nbar': 'user_hub',
-                    'user': request.user}
-    
+                    'user': request.user,
+                    'meal_of_the_day': meal_of_the_day,
+                    'has_meal_of_the_day': userHasMeal(request,meal_of_the_day['strMeal'])}
     response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
 
@@ -283,6 +289,25 @@ def schedule(request):
     response = render(request, 'MyMealMate/schedule.html', context = context_dict)
     return response
 
+@login_required
+def add_meal_of_the_day(request):
+    meal_of_the_day = request.session.get('meal_of_the_day', None)
+    if not userHasMeal(request,meal_of_the_day['strMeal']):
+        meal = Meal()
+        meal.user = request.user
+        meal.name = meal_of_the_day['strMeal']
+        meal.image = meal_of_the_day['strMealThumb']
+        meal.url = meal_of_the_day['strSource']
+        meal.instructions = meal_of_the_day['strInstructions']
+        meal.save()
+        return redirect(reverse('MyMealMate:my_meals'))
+    return redirect(reverse('MyMealMate:user_hub'))
+
+@login_required
+def userHasMeal(request,meal_name):
+    if Meal.objects.filter(user=request.user).filter(name=meal_name).exists():
+        return True
+    return False
 
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
@@ -291,7 +316,7 @@ def get_server_side_cookie(request, cookie, default_val=None):
     return val
 
 def set_meal_cookie(request):
-    meal_cookie = get_server_side_cookie(request, 'meal_cookie', "Creamy Tomato Soup")
+    meal_cookie = get_server_side_cookie(request, 'meal_of_the_day', "Creamy Tomato Soup")
     last_set = get_server_side_cookie(request, 'last_set')
     
     if meal_cookie and last_set:
@@ -308,6 +333,4 @@ def set_meal_cookie(request):
         request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
         request.session['last_set'] = str(datetime.now())
 
-    conn.close()
-
-    
+    conn.close()   
