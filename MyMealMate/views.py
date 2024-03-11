@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.template.defaultfilters import slugify
 from MyMealMate.forms import *
 from MyMealMate.models import *
 from MyMealMate.forms import MealForm
@@ -171,6 +172,7 @@ def my_meals(request):
   
     meals = Meal.objects.filter(user=request.user)
     context_dict["meals"] = meals
+    context_dict["username_slug"] = slugify(request.user.username)
 
     response = render(request, 'MyMealMate/my_meals.html', context=context_dict)
     return response
@@ -178,17 +180,17 @@ def my_meals(request):
 
 @login_required
 def new_meal(request):
-    form = MealForm()
+
+    form = MealForm(request.POST or None, user=request.user)
 
     if request.method == 'POST':
-        form = MealForm(request.POST)
+        form = MealForm(request.POST or None, user=request.user)
         if form.is_valid():
             # Save the new meal to the database
             meal = form.save(commit=False)
             meal.user = request.user
             meal.save()
-            print(meal, meal.slug)
-            return redirect(reverse('MyMealMate:meal', kwargs={'meal_name_slug': meal.slug}))
+            return redirect(reverse('MyMealMate:meal', kwargs={'username_slug': slugify(request.user.username), 'meal_name_slug': meal.slug}))
     else:
         print(form.errors)
 
@@ -196,9 +198,9 @@ def new_meal(request):
 
 
 @login_required
-def meal(request, meal_name_slug):
+def meal(request, username_slug, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
-    context_dict = {'nbar': 'meal', "meal": meal}
+    context_dict = {'nbar': 'meal', "meal": meal, "username_slug": slugify(request.user.username)}
     """"
     # this is how you'd schedule/unschedule a meal for tomorrow
     user_schedule = Schedule.objects.get(user=request.user)
@@ -213,7 +215,7 @@ def meal(request, meal_name_slug):
 
 
 @login_required
-def edit_meal(request, meal_name_slug):
+def edit_meal(request, username_slug, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
     context_dict = {'nbar': 'edit_meal', "meal": meal}
 
@@ -262,7 +264,7 @@ def clear_completed(request):
 @login_required
 def edit_shopping_list(request):
     # ToDo: don't allow unit without amount
-    shopping_list = ShoppingList.objects.get(user=request.user)
+    shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
     items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
     form = ShoppingListForm()
 

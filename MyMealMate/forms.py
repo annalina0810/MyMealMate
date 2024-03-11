@@ -1,4 +1,5 @@
 from django import forms
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from MyMealMate.models import UserProfile
 from MyMealMate.models import Meal, ShoppingListItem
@@ -36,13 +37,27 @@ class EditPictureForm(forms.ModelForm):
 
 
 class MealForm(forms.ModelForm):
-    name = forms.CharField(max_length=128, help_text="Please enter the meal name.")
-    views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
+    name = forms.CharField(max_length=30, help_text="Please enter the meal name.")
+    url = forms.URLField(required=False, help_text="url:")
+    instructions = forms.CharField(max_length=500, required=False, help_text="instructions")
+    schedCounter = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(MealForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    def clean_name(self):
+        cleaned_data = self.clean()
+        name = cleaned_data.get('name')
+        if Meal.objects.filter(user=self.user, slug=slugify(name)).exists():
+            self.add_error('name', "You have already a meal with that name")
+        return name
 
     class Meta:
         model = Meal
-        fields = ('name',)
+        fields = ('name', 'url', 'instructions', )
 
 
 class ShoppingListForm(forms.ModelForm):
