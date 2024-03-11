@@ -12,9 +12,9 @@
     <ul>
         {% for meal in meals %}
         {%if meal.url and meal.instructions%}
-            <li> <a href ="{% url 'MyMealMate:meal' meal.slug  %}" >{{meal.name}} </a> ||  <a href="{{m.url}}">Recipe</a> || instructions: {{meal.instructions}} || times scheduled: {{meal.schedCounter}}</li>
+            <li> <a href ="{% url 'MyMealMate:meal' username_slug=username_slug meal_name_slug=meal.slug  %}" >{{meal.name}} </a> ||  <a href="{{m.url}}">Recipe</a> || instructions: {{meal.instructions}} || times scheduled: {{meal.schedCounter}}</li>
         {%else%}
-            <li> <a href ="{% url 'MyMealMate:meal' meal.slug  %}" >{{meal.name}} </a>  || times scheduled: {{meal.schedCounter}}</li>
+            <li> <a href ="{% url 'MyMealMate:meal' username_slug=username_slug meal_name_slug=meal.slug  %}" >{{meal.name}} </a>  || times scheduled: {{meal.schedCounter}}</li>
         {%endif%}
         {% endfor %}
     </ul>
