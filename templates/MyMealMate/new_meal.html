@@ -9,17 +9,22 @@
 {% block body_block %}
 <h1>Add a New Meal</h1>
 <div>
-    <form id="meal_form" method="post" action="/MyMealMate/my_meals/new_meal/">
+    <form id="meal_form" method="post" action="/MyMealMate/my_meals/new_meal/" enctype="multipart/form-data">
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
-            {% endfor %}
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field }}<br>
-            {% endfor %}
-            <input type="submit" name="submit" value="Create Meal" />
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div class="field">
+                {{ field.label_tag }} {# Display the label #}
+                {{ field.errors }} {# Display any errors #}
+                {{ field }} {# Display the form field #}
+                {{ field.help_text }} {# Display the help text if available #}
+            </div>
+        {% endfor %}
+
+        <input type="submit" name="submit" value="Create Meal" />
     </form>
 </div>
 {% endblock %}

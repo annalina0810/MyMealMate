@@ -8,7 +8,20 @@
 
 {% block body_block %}
 <h1>{{meal.name}}</h1>
-<a href="{% url 'MyMealMate:edit_meal' meal.slug %}">Edit Meal</a>
+{% if meal.image %}
+    <img src="{{meal.image.url}}" alt="Meal Image">
+{% endif %}
+{% if meal.url %}
+    {{meal.url}}
+{% endif %}
+<h3>Ingredients</h3>
+<ul>
+    {% for ingredient in meal.ingredients.all %}
+        <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}</li>
+    {% endfor %}
+</ul>
+<br>
+<a href="{% url 'MyMealMate:edit_meal' meal.slug %}">Edit Meal</a><br>
 <a href="{% url 'MyMealMate:my_meals' %}">All Meals</a>
 
 {% endblock %}

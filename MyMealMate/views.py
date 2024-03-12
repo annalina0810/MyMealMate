@@ -1,12 +1,14 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
+from django.views.decorators.csrf import csrf_exempt
 from MyMealMate.forms import *
 from MyMealMate.models import *
-from MyMealMate.forms import MealForm
+from MyMealMate.forms import MealForm, MealEditForm
 from datetime import datetime,timedelta
 from http import client
 from http import cookiejar
@@ -172,25 +174,15 @@ def my_meals(request):
 
 @login_required
 def new_meal(request):
-    form = MealForm()
-
     if request.method == 'POST':
-        form = MealForm(request.POST)
+        form = MealForm(request.POST, request.FILES)
         if form.is_valid():
-            # Save the new meal to the database
             meal = form.save(commit=False)
-            meal.user = request.user
-
-            if 'image' in request.FILES:
-                meal.image = request.FILES['image']
-                print(f"Image uploaded for meal {meal.name}: {meal.image.url}")
-
+            meal.user = request.user  
             meal.save()
-
-            print(meal, meal.slug)
-            return redirect(reverse('MyMealMate:meal', kwargs={'meal_name_slug': meal.slug}))
+            return redirect(reverse('MyMealMate:my_meals'))
     else:
-        print(form.errors)
+        form = MealForm()
 
     return render(request, 'MyMealMate/new_meal.html', {'form': form})
 
@@ -212,15 +204,79 @@ def meal(request, meal_name_slug):
     response = render(request, 'MyMealMate/meal.html', context = context_dict)
     return response
 
-
-@login_required
 def edit_meal(request, meal_name_slug):
-    meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
-    context_dict = {'nbar': 'edit_meal', "meal": meal}
+    meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
 
-    response = render(request, 'MyMealMate/edit_meal.html', context = context_dict)
-    return response
+    if request.method == 'POST':
+        form = MealEditForm(request.POST, request.FILES, instance=meal)
+        if form.is_valid():
+            meal = form.save(commit=False)
+            # Save the meal and retrieve the updated ingredients list
+            ingredients_list = request.POST.getlist('ingredients')
+            meal.save()
+            return render(request, 'MyMealMate/meal.html', {'meal': meal, 'ingredients_list': ingredients_list})
+    else:
+        form = MealEditForm(instance=meal)
+    return render(request, 'MyMealMate/edit_meal.html', {'form': form, 'meal': meal})
 
+@csrf_exempt
+def add_ingredient(request, meal_name_slug):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        amount = request.POST.get('amount')
+        unit = request.POST.get('unit')
+        meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
+
+        # Create the new ingredient and associate it with the meal
+        ingredient = Ingredient.objects.create(name=name, amount=amount, unit=unit)
+        meal.ingredients.add(ingredient)
+
+        return JsonResponse({'id': ingredient.id})
+
+@csrf_exempt
+def edit_ingredient(request, meal_name_slug):
+    if request.method == 'GET':
+        ingredient_id = request.GET.get('ingredient_id')
+        try:
+            ingredient = Ingredient.objects.get(id=ingredient_id)
+            data = {
+                'name': ingredient.name,
+                'amount': ingredient.amount,
+                'unit': ingredient.unit
+            }
+            response = JsonResponse(data)
+            return response
+        except Ingredient.DoesNotExist:
+            return JsonResponse({'error': 'Ingredient not found'}, status=404)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def delete_ingredient(request, meal_name_slug):
+    if request.method == 'POST':
+        # Retrieve the meal
+        meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
+        ingredient_id = request.POST.get('ingredient_id')
+        # Retrieve the ingredient
+        ingredient = get_object_or_404(Ingredient, id=ingredient_id)
+        
+        # Remove the ingredient from the meal
+        meal.ingredients.remove(ingredient)
+        
+        # Delete the ingredient itself
+        ingredient.delete()
+        
+        return JsonResponse({'message': 'Ingredient deleted successfully'})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+def delete_meal(request, meal_name_slug):
+    meal = get_object_or_404(Meal, slug=meal_name_slug)
+
+    if request.method == 'POST':
+        meal.delete()
+
+    return redirect(reverse('MyMealMate:my_meals'))
 
 @login_required
 def shopping_list(request):
