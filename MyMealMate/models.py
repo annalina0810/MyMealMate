@@ -21,7 +21,7 @@ class Ingredient(models.Model):
         return self.name
 
 class Meal(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=30)
     image = models.ImageField(upload_to="meal_images/", null=True, blank=True)  
     ingredients = models.ManyToManyField(Ingredient)
