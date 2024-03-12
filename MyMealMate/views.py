@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 from django.views.decorators.csrf import csrf_exempt
+from django.template.defaultfilters import slugify
 from MyMealMate.forms import *
 from MyMealMate.models import *
 from MyMealMate.forms import MealForm, MealEditForm
@@ -94,13 +95,16 @@ def signup(request):
 
 @login_required
 def user_logout(request):
+    meal_of_the_day = request.session.get('meal_of_the_day', None)
+    last_set = request.session.get('last_set', None)
     logout(request)
+    request.session['meal_of_the_day'] = meal_of_the_day
+    request.session['last_set'] = last_set
     return redirect(reverse('MyMealMate:home'))
 
 
 @login_required
 def delete_account(request):
-
     user = request.user
     user.delete()
     return redirect(reverse('MyMealMate:home'))
@@ -108,9 +112,12 @@ def delete_account(request):
 
 @login_required
 def user_hub(request):
+    set_meal_cookie(request)
+    meal_of_the_day = request.session['meal_of_the_day']
     context_dict = {'nbar': 'user_hub',
-                    'user': request.user}
-    
+                    'user': request.user,
+                    'meal_of_the_day': meal_of_the_day,
+                    'has_meal_of_the_day': userHasMeal(request,meal_of_the_day['strMeal'])}
     response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
 
@@ -167,6 +174,7 @@ def my_meals(request):
   
     meals = Meal.objects.filter(user=request.user)
     context_dict["meals"] = meals
+    context_dict["username_slug"] = slugify(request.user.username)
 
     response = render(request, 'MyMealMate/my_meals.html', context=context_dict)
     return response
@@ -174,13 +182,14 @@ def my_meals(request):
 
 @login_required
 def new_meal(request):
+
     if request.method == 'POST':
-        form = MealForm(request.POST, request.FILES)
+        form = MealForm(request.POST or None, user=request.user)
         if form.is_valid():
             meal = form.save(commit=False)
             meal.user = request.user  
             meal.save()
-            return redirect(reverse('MyMealMate:my_meals'))
+            return redirect(reverse('MyMealMate:meal', kwargs={'username_slug': slugify(request.user.username), 'meal_name_slug': meal.slug}))
     else:
         form = MealForm()
 
@@ -188,10 +197,10 @@ def new_meal(request):
 
 
 @login_required
-def meal(request, meal_name_slug):
+def meal(request, username_slug, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
-    
-    context_dict = {'nbar': 'meal', "meal": meal}
+    context_dict = {'nbar': 'meal', "meal": meal, "username_slug": slugify(request.user.username)}
+
     """"
     # this is how you'd schedule/unschedule a meal for tomorrow
     user_schedule = Schedule.objects.get(user=request.user)
@@ -203,6 +212,7 @@ def meal(request, meal_name_slug):
     """
     response = render(request, 'MyMealMate/meal.html', context = context_dict)
     return response
+
 
 def edit_meal(request, meal_name_slug):
     meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
@@ -280,7 +290,7 @@ def delete_meal(request, meal_name_slug):
 
 @login_required
 def shopping_list(request):
-    shopping_list = ShoppingList.objects.get(user=request.user)
+    shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
     items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
 
     context_dict = {'nbar': 'shopping_list', "items": items}
@@ -319,7 +329,7 @@ def clear_completed(request):
 @login_required
 def edit_shopping_list(request):
     # ToDo: don't allow unit without amount
-    shopping_list = ShoppingList.objects.get(user=request.user)
+    shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
     items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
     form = ShoppingListForm()
 
@@ -346,6 +356,25 @@ def schedule(request):
     response = render(request, 'MyMealMate/schedule.html', context = context_dict)
     return response
 
+@login_required
+def add_meal_of_the_day(request):
+    meal_of_the_day = request.session.get('meal_of_the_day', None)
+    if not userHasMeal(request,meal_of_the_day['strMeal']):
+        meal = Meal()
+        meal.user = request.user
+        meal.name = meal_of_the_day['strMeal']
+        meal.image = meal_of_the_day['strMealThumb']
+        meal.url = meal_of_the_day['strSource']
+        meal.instructions = meal_of_the_day['strInstructions']
+        meal.save()
+        return redirect(reverse('MyMealMate:my_meals'))
+    return redirect(reverse('MyMealMate:user_hub'))
+
+@login_required
+def userHasMeal(request,meal_name):
+    if Meal.objects.filter(user=request.user).filter(name=meal_name).exists():
+        return True
+    return False
 
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
@@ -354,7 +383,7 @@ def get_server_side_cookie(request, cookie, default_val=None):
     return val
 
 def set_meal_cookie(request):
-    meal_cookie = get_server_side_cookie(request, 'meal_cookie', "Creamy Tomato Soup")
+    meal_cookie = get_server_side_cookie(request, 'meal_of_the_day', "Creamy Tomato Soup")
     last_set = get_server_side_cookie(request, 'last_set')
     
     if meal_cookie and last_set:
@@ -371,6 +400,4 @@ def set_meal_cookie(request):
         request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
         request.session['last_set'] = str(datetime.now())
 
-    conn.close()
-
-    
+    conn.close()   

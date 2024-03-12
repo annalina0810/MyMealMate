@@ -1,4 +1,5 @@
 from django import forms
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from MyMealMate.models import UserProfile
 from MyMealMate.models import Meal, ShoppingListItem, Ingredient
@@ -33,7 +34,6 @@ class EditPictureForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('picture',)
-
 
 class MealEditForm(forms.ModelForm):
     class Meta:

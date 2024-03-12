@@ -28,7 +28,7 @@ class Meal(models.Model):
     url = models.URLField(blank=True)
     instructions = models.TextField(blank=True)
     schedCounter = models.IntegerField(default=0)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField()
 
     def save(self, *args, **kwargs):
         if not self.slug or Meal.objects.filter(slug=self.slug).exists():

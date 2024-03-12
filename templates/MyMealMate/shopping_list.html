@@ -6,6 +6,10 @@
     Shopping List
 {% endblock %}
 
+{% block script_block %}
+    <script src="{% static 'js/popups.js' %}"></script>
+{% endblock %}
+
 {% block body_block %}
 <h1>Shopping List</h1>
     {%if items%}
@@ -26,7 +30,7 @@
 <br/>
 <div>
     <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_shopping_list' %}';">Add Items</button>
-    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_all' %}';">Clear all</button>
+    <button class="button" onclick="clearAll()">New clear All</button>
     <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_completed' %}';">Clear completed</button>
 </div>
 {% endblock %}
