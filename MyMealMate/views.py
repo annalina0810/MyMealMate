@@ -184,12 +184,12 @@ def my_meals(request):
 def new_meal(request):
 
     if request.method == 'POST':
-        form = MealForm(request.POST or None, user=request.user)
+        form = MealForm(request.POST, request.FILES)
         if form.is_valid():
             meal = form.save(commit=False)
             meal.user = request.user  
             meal.save()
-            return redirect(reverse('MyMealMate:meal', kwargs={'username_slug': slugify(request.user.username), 'meal_name_slug': meal.slug}))
+            return redirect(reverse('MyMealMate:my_meals'))
     else:
         form = MealForm()
 
@@ -197,7 +197,7 @@ def new_meal(request):
 
 
 @login_required
-def meal(request, username_slug, meal_name_slug):
+def meal(request, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
     context_dict = {'nbar': 'meal', "meal": meal, "username_slug": slugify(request.user.username)}
 
@@ -255,6 +255,7 @@ def edit_ingredient(request, meal_name_slug):
                 'unit': ingredient.unit
             }
             response = JsonResponse(data)
+            
             return response
         except Ingredient.DoesNotExist:
             return JsonResponse({'error': 'Ingredient not found'}, status=404)

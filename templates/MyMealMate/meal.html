@@ -12,7 +12,10 @@
     <img src="{{meal.image.url}}" alt="Meal Image">
 {% endif %}
 {% if meal.url %}
-    {{meal.url}}
+    {{meal.url}} <br>
+{% endif %}
+{% if meal.instructions %}
+    {{meal.instructions}}
 {% endif %}
 <h3>Ingredients</h3>
 <ul>
