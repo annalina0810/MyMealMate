@@ -4,29 +4,29 @@
     height: 80vh;
     box-sizing: border-box;
     vertical-align: top;
-}
+    width:48%;
 
-.login_signup {
-    width:64%;
-}
-
-.meal_of_the_day {
-    width:32%;
 }
 
 .thumbnail {
     aspect-ratio: 1 / 1;
-    width: 98%;
 }
 
-ul {
+.thumbnail,#ingredients {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    width: 48%;
+}
+
+.login_signup ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
 }
 
-li {
+.login_signup li {
     float: left;
     display: block;
     color: white;
