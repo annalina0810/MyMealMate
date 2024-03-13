@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-{% extends 'MyMealMate/base.html' %}
-{% load staticfiles %}
-
-{% block title_block %}
-    Schedule
-{% endblock %}
-
-<!-- // logic for date
+// logic for date
 // default to creating a schedule for current month
 // if the select previous or next month, use selected_month instead
 // if the today button is clicked, use current month
@@ -16,24 +8,23 @@
 // get first day of month
 // structure will be days of the week as heading, and then the days of the month
 // so for if the first day of the month is a Wednesday, then the first 2 days of the month will be empty
-// then the days of the month will be filled in, and then the last days of the month will be empty until the end of the week
+// then the days of the month will be filled in, and then the last days of the month will be empty until the end of the wee
 
-// code
-
+var selected_day = new Date().getDate();
 var selected_month = new Date().getMonth();
 var selected_year = new Date().getFullYear();
-var selected_day = new Date().getDate();
-var selected_date = new Date(selected_year, selected_month, selected_day);
 
 document.addEventListener('DOMContentLoaded', function() {
     createCalendar(selected_month, selected_year);
-}
+});
 
 function createCalendar(month, year) {
     var days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     var first_day = new Date(year, month, 1);
     var last_day = new Date(year, month + 1, 0);
     var calendar = "<table class='calendar'>";
+    // alert("month: " + month + " year: " + year);
+    calendar += "<caption>" + first_day.toLocaleString('default', { month: 'long' }) + " " + year + "</caption>";
     calendar += "<tr><th>" + days_of_week.join("</th><th>") + "</th></tr>";
     var day = 1;
     for (var i = 0; i < 6; i++) {
@@ -44,7 +35,7 @@ function createCalendar(month, year) {
             } else if (day > last_day.getDate()) {
                 break;
             } else {
-                calendar += "<td>" + day + "</td>";
+                calendar += "<td><div id='scheduleDate'>" + day + "</div></td>";
                 day++;
             }
         }
@@ -55,39 +46,26 @@ function createCalendar(month, year) {
 }
 
 function previousMonth() {
-    selected_month = selected_month - 1;
+    selected_month -= 1;
+    if (selected_month < 0) {
+        selected_month = 11;
+        selected_year -= 1;
+    }
     createCalendar(selected_month, selected_year);
 }
 
 function nextMonth() {
-    selected_month = selected_month + 1;
+    selected_month += 1;
+    if (selected_month > 11) {
+        selected_month = 0;
+        selected_year += 1;
+    }
     createCalendar(selected_month, selected_year);
 }
 
 function today() {
     selected_month = new Date().getMonth();
     createCalendar(selected_month, selected_year);
-} -->
+}
 
-{% block stylesheet_block %}
-<link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}">
-{% endblock %}
 
-{% block script_block %}
-<script src="{% static 'js/create_schedule.js' %}"></script>
-{% endblock %}
-
-{% block body_block %}
-<h1>Schedule</h1>
-<div class="schedule_nav">
-    <ul>
-        <li><button id="prevMonthButton" onclick="previousMonth()">Previous</button></li>
-        <li><button id="todayButton" onclick="today()">Current Month</button></li>
-        <li><button id="nextMonthButton" onclick="nextMonth()">Next</button></li>
-        <!-- test -->
-        <li>
-    </ul>
-</div>
-
-<div id="calendar"></div>
-{% endblock %}

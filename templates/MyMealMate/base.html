@@ -3,50 +3,59 @@
 {%load MyMealMate_template_tags%}
 
 <html>
-  <head>
-      <title>
-        MyMealMate -
-        {% block title_block %}
-        {% endblock %}
-      </title>
-      <link rel="stylesheet" href="{% static 'css/base_styles.css' %}">
-      {% block stylesheet_block %}
-      {% endblock %}
-      {% block script_block %}
-      {% endblock %}
-  </head>
 
-  <body>
-    <nav>
-      <div class="logo">
-          <a href="{% url 'MyMealMate:user_hub' %}"><img src="{% static 'images/small_logo.png' %}" alt="Meal Mate Logo"></a></a>
-      </div>
-  
-      <ul class="nav-links">
-          {% if user.is_authenticated %}
-          <li><a href="{% url 'MyMealMate:user_hub' %}" class="{% if nbar == 'user_hub' %}active{% endif %}">User Hub</a></li>
-          <li><a href="{% url 'MyMealMate:my_meals' %}" class="{% if nbar == 'my_meals' %}active{% endif %}">My Meals</a></li>
-          <li><a href="{% url 'MyMealMate:schedule' %}" class="{% if nbar == 'schedule' %}active{% endif %}">Schedule</a></li>
-          <li><a href="{% url 'MyMealMate:shopping_list' %}" class="{% if nbar == 'shopping_list' %}active{% endif %}">Shopping List</a></li>
-          <li><a href="{% url 'MyMealMate:profile' %}" class="{% if nbar == 'profile' %}active{% endif %}">Profile</a></li>
-          {% endif %}
-      </ul>
-  
-      <div class="auth-links">
-          {% if user.is_authenticated %}
-          <a href="{% url 'MyMealMate:logout' %}">Logout</a>
-          {% else %}  
-          <a href="{% url 'MyMealMate:home' %}">Login</a>
-          <a href="{% url 'MyMealMate:signup' %}" class="signup-link">Signup</a>
-          {% endif %}
-      </div>
-    </nav>
+<head>
+  <title>
+    MyMealMate -
+    {% block title_block %}
+    {% endblock %}
+  </title>
+  <link rel="stylesheet" href="{% static 'css/base_styles.css' %}">
+  {% block stylesheet_block %}
+  {% endblock %}
+  {% block script_block %}
+  {% endblock %}
+</head>
 
-    <div class="main">
-      <div class="main-content">
+<body>
+  <nav>
+    <div class="logo">
+      <a href="{% url 'MyMealMate:user_hub' %}"><img src="{% static 'images/small_logo.png' %}"
+          alt="Meal Mate Logo"></a></a>
+    </div>
+
+    <ul class="nav-links">
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'MyMealMate:user_hub' %}" class="{% if nbar == 'user_hub' %}active{% endif %}">User Hub</a>
+      </li>
+      <li><a href="{% url 'MyMealMate:my_meals' %}" class="{% if nbar == 'my_meals' %}active{% endif %}">My Meals</a>
+      </li>
+      <li><a href="{% url 'MyMealMate:schedule' %}" class="{% if nbar == 'schedule' %}active{% endif %}">Schedule</a>
+      </li>
+      <li><a href="{% url 'MyMealMate:shopping_list' %}"
+          class="{% if nbar == 'shopping_list' %}active{% endif %}">Shopping List</a></li>
+      <li><a href="{% url 'MyMealMate:profile' %}" class="{% if nbar == 'profile' %}active{% endif %}">Profile</a></li>
+      {% endif %}
+    </ul>
+
+    <div class="auth-links">
+      {% if user.is_authenticated %}
+      <a href="{% url 'MyMealMate:logout' %}">Logout</a>
+      {% else %}
+      {% if nbar != 'home' and nbar != 'signup' %}
+      <a href="{% url 'MyMealMate:home' %}">Login</a>
+      <a href="{% url 'MyMealMate:signup' %}" class="signup-link">Signup</a>
+      {% endif %}
+      {% endif %}
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="main-content">
       {% block body_block %}
       {% endblock %}
-      </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

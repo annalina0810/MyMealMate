@@ -18,20 +18,22 @@
 <div class="login_signup_nav">
     <ul>
         <li class="selected"><h1>Login</h1></li>
-        <li><a href="{% url 'MyMealMate:signup'%}"><h1>Signup</h1></a></li>
+        <li><a href="{% url 'MyMealMate:signup'%}"><h1>Sign Up</h1></a></li>
     </ul>
 </div>
 
+<div class="login_signup_form">
+
 <form id="login_form" method="post" action="{% url 'MyMealMate:home' %}">
     {% csrf_token %}
-    Username: <input type="text" name="username" value="" size="50" />
+    <p class="signin_label">Username: </p><input type="text" name="username" value="" size="50" />
     <br /><br/>
-    Password: <input type="password" name="password" value="" size="50" />
+    <p class="signin_label">Password: </p><input type="password" name="password" value="" size="50" />
     <br /><br/>
     <input type="submit" value="Log In">
 
 </form>
-<br/>
+</div>
 
 {% endblock %}
 

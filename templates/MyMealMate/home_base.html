@@ -2,26 +2,28 @@
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
 {% load MyMealMate_template_tags %}
-            
+
 {% block stylesheet_block %}
-    <link rel="stylesheet" href="{% static 'css/home_styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/home_styles.css' %}">
 {% endblock %}
 
 {% block script_block %}
-    <script src="{% static 'js/meal_of_the_day.js' %}"></script>
+<script src="{% static 'js/meal_of_the_day.js' %}"></script>
 {% endblock %}
 
 
 {% block body_block %}
 
-<div class="meal_of_the_day" meal_of_the_day="{{ meal_of_the_day }}">
-<h1>Meal of The Day: {{ meal_of_the_day }}</h1>
-<div id="meal_of_the_day"></div>
-</div>
+<div class="home_content_container">
+    <div class="meal_of_the_day" meal_of_the_day="{{ meal_of_the_day }}">
+        <h1>Meal of The Day: {{ meal_of_the_day }}</h1>
+        <div id="meal_of_the_day"></div>
+    </div>
 
-<div class="login_signup">
-{% block credentials %}
-{% endblock %}
+    <div class="login_signup">
+        {% block credentials %}
+        {% endblock %}
+    </div>
 </div>
 
 {% endblock %}

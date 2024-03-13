@@ -48,8 +48,6 @@ def home(request):
 
 
 def signup(request):
-    context_dict = {'nbar': 'signup'}
-
     registered = False
 
     if request.method == 'POST':
@@ -84,7 +82,8 @@ def signup(request):
     context_dict = {'user_form': user_form,
                     'profile_form':profile_form,
                     'registered': registered,
-                    'meal_of_the_day': request.session['meal_of_the_day']}
+                    'meal_of_the_day': request.session['meal_of_the_day'],
+                    'nbar': 'signup'}
 
     response = render(request, 'MyMealMate/signup.html', context = context_dict)
     return response

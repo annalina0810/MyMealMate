@@ -27,7 +27,6 @@ function getMealCookie(name) {
 
 function displayMeal(meal) {
     var disp = "";
-    disp += meal.strMeal + "<br>";
     disp += "<br><img class='thumbnail' src='"+meal.strMealThumb+"'>";
     document.getElementById("meal_of_the_day").innerHTML = disp;
 }
