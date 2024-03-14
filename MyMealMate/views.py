@@ -296,9 +296,12 @@ def add_meal_of_the_day(request):
         meal = Meal()
         meal.user = request.user
         meal.name = meal_of_the_day['strMeal']
-        meal.image = meal_of_the_day['strMealThumb']
-        meal.url = meal_of_the_day['strSource']
-        meal.instructions = meal_of_the_day['strInstructions']
+        if meal_of_the_day['strMealThumb']:
+            meal.image = meal_of_the_day['strMealThumb']
+        if meal_of_the_day['strSource']:
+            meal.url = meal_of_the_day['strSource']
+        if meal_of_the_day['strInstructions']:
+            meal.instructions = meal_of_the_day['strInstructions']
         meal.save()
         return redirect(reverse('MyMealMate:my_meals'))
     return redirect(reverse('MyMealMate:user_hub'))
