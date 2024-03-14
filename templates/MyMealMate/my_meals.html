@@ -11,11 +11,22 @@
     {% if meals %}
     <ul>
         {% for meal in meals %}
-        {%if meal.url and meal.instructions%}
-            <li> <a href ="{% url 'MyMealMate:meal' meal.slug  %}" >{{meal.name}} </a> ||  <a href="{{m.url}}">Recipe</a> || instructions: {{meal.instructions}} || times scheduled: {{meal.schedCounter}}</li>
-        {%else%}
-            <li> <a href ="{% url 'MyMealMate:meal' meal.slug  %}" >{{meal.name}} </a>  || times scheduled: {{meal.schedCounter}}</li>
-        {%endif%}
+        {% if meal.image %}
+            <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
+        {% endif %}
+        <li>
+            <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>
+        
+            {% if meal.url %}
+                || <a href="{{ meal.url }}">Recipe</a>
+            {% endif %}
+        
+            {% if meal.instructions %}
+                || Instructions: {{ meal.instructions }}
+            {% endif %}
+        
+            || Times Scheduled: {{ meal.schedCounter }}
+        </li>
         {% endfor %}
     </ul>
     {%else%}

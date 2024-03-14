@@ -12,18 +12,36 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+class Ingredient(models.Model):
+    name = models.CharField(max_length=30)
+    amount = models.IntegerField(blank=True, null=True)
+    unit = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
 
 class Meal(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=30)
-    image = models.ImageField(upload_to="meal_images", blank=True)  # change to blank=False?
+    image = models.ImageField(upload_to="meal_images/", null=True, blank=True)  
+    ingredients = models.ManyToManyField(Ingredient)
     url = models.URLField(blank=True)
     instructions = models.TextField(blank=True)
     schedCounter = models.IntegerField(default=0)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField()
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        if not self.slug or Meal.objects.filter(slug=self.slug).exists():
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+
+            while Meal.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
         super(Meal, self).save(*args, **kwargs)
 
     class Meta:
@@ -31,17 +49,6 @@ class Meal(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Ingredient(models.Model):
-    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
-    name = models.CharField(max_length=30)
-    amount = models.IntegerField(blank=True, null=True)
-    unit = models.CharField(max_length=30, blank=True)
-
-    def __str__(self):
-        return self.name
-
 
 class ShoppingList(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

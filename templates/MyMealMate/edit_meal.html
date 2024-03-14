@@ -7,5 +7,141 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>{{meal.name}} - Edit Meal</h1>
+    <h2>Edit Meal: {{ meal.name }}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save changes</button>
+        <button type="submit" formaction="{% url 'MyMealMate:delete_meal' meal.slug %}">Delete Meal</button>
+    </form>
+    <form name="ingredient" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+      <ul id="ingredient-list">
+          {% for ingredient in meal.ingredients.all %}
+            <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}
+              <!-- <button name="editIngredient" type="submit" value="{{ ingredient.id }}" formaction="{% url 'MyMealMate:edit_ingredient' meal.slug %}">Edit</button> -->
+              <a href="#" class="edit-ingredient" data-ingredient-id="{{ ingredient.id }}">Edit</a>
+              <a href="#" class="delete-ingredient" data-ingredient-id="{{ ingredient.id }}">Delete</a>
+            </li>
+          {% endfor %}
+      </ul>
+    </form>
+    
+      <!-- Add new ingredient form -->
+      <form method="post" enctype="multipart/form-data" id="add-ingredient-form">
+        {% csrf_token %}
+        <input type="text" id="new-ingredient-name" placeholder="Ingredient name" required>
+        <input type="number" id="new-ingredient-amount" placeholder="Amount" min="1" required>
+        <input type="text" id="new-ingredient-unit" placeholder="Unit" required>
+        <button type="button" id="add-ingredient">Add Ingredient</button>
+      </form>
+    
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <script>
+        // jQuery document ready function
+        $(document).ready(function() {
+          // Handle adding new ingredients without refreshing the page
+          $("#add-ingredient").on("click", function() {
+            var name = $("#new-ingredient-name").val();
+            var amount = $("#new-ingredient-amount").val();
+            var unit = $("#new-ingredient-unit").val();
+    
+            if (name && amount) {
+              console.log("Adding ingredient...") 
+
+              $.ajax({
+                type: "POST",
+                url: "{% url 'MyMealMate:add_ingredient' meal_name_slug=meal.slug %}",
+                data: {
+                    'name': name,
+                    'amount': amount,
+                    'unit': unit,
+                    'meal_id': '{{ meal.id }}',  // Pass the meal ID to associate the ingredient with the meal
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    console.log("ingredient added successfully")
+                    // Append new ingredient to the list on success
+                    $("#ingredient-list").append('<li>' + name + ' - ' + amount + ' ' + unit +
+                        ' <a href="#" class="edit-ingredient" data-ingredient-id="' + response.id + '">Edit</a>' +
+                        ' <a href="#" class="delete-ingredient" data-ingredient-id="' + response.id + '">Delete</a></li>');
+
+                    // Clear input fields
+                    $("#new-ingredient-name").val("");
+                    $("#new-ingredient-amount").val("");
+                    $("#new-ingredient-unit").val("");
+                },
+                error: function(error) {
+                    console.log("Error adding ingredient")
+                    console.log(error);
+                }
+              });
+            } 
+          });
+
+          $(".edit-ingredient").on("click", function() {
+            var ingredientId = $(this).data("ingredient-id");
+            var listItem = $(this).closest("li");
+            // Send AJAX request to get ingredient details
+            $.ajax({
+                type: "GET",
+                url: "{% url 'MyMealMate:edit_ingredient' meal.slug %}",
+                data: {
+                    'ingredient_id': ingredientId,
+                },
+                success: function(response) {
+                    // Populate the form fields with ingredient details
+                    $("#new-ingredient-name").val(response.name);
+                    $("#new-ingredient-amount").val(response.amount);
+                    $("#new-ingredient-unit").val(response.unit);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.log("Error:", errorThrown);
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "{% url 'MyMealMate:delete_ingredient' meal_name_slug=meal.slug %}",
+                data: {
+                    'ingredient_id': ingredientId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                  console.log("Ingredient deleted successfully");
+                  // Remove the ingredient from the list on success
+                  listItem.remove();
+              },
+                error: function(error) {
+                  console.log("Error deleting ingredient");
+                  console.log(error);
+                }
+        });
+      });
+    
+          $("#ingredient-list").on("click", ".delete-ingredient", function() {
+            var ingredientId = $(this).data("ingredient-id");
+            var listItem = $(this).closest("li");
+            $.ajax({
+                type: "POST",
+                url: "{% url 'MyMealMate:delete_ingredient' meal_name_slug=meal.slug %}",
+                data: {
+                    'ingredient_id': ingredientId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                  console.log("Ingredient deleted successfully");
+                  // Remove the ingredient from the list on success
+                  listItem.remove();
+              },
+                error: function(error) {
+                  console.log("Error deleting ingredient");
+                  console.log(error);
+                }
+            });
+          });
+        });
+        
+      </script>
+    <!-- Back to My Meals Link -->
+    <a href="{% url 'MyMealMate:my_meals' %}">Back to My Meals</a>
 {% endblock %}

@@ -42,10 +42,12 @@ def populate():
                    {"name": "Tomato Sauce", "amount": "300", "unit": "ml"},
                    ]
 
-    def add_meal(name, url, instructions):
+    def add_meal(name, url, image, instructions):
         m = Meal.objects.get_or_create(user=test_user, name=name)[0]
         if url is not None:
             m.url = url
+        if image is not None:
+            m.image = image
         if instructions is not None:
             m.instructions = instructions
         m.save()
@@ -62,7 +64,7 @@ def populate():
 
     # add Meals
     for m in meals:
-        add_meal(m["name"], m["url"], m["instructions"])
+        add_meal(m["name"], m["image"], m["url"], m["instructions"])
 
     # add Ingredients
     for i in ingredients[:-1]:
