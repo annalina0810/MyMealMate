@@ -19,7 +19,6 @@
       <ul id="ingredient-list">
           {% for ingredient in meal.ingredients.all %}
             <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}
-              <!-- <button name="editIngredient" type="submit" value="{{ ingredient.id }}" formaction="{% url 'MyMealMate:edit_ingredient' meal.slug %}">Edit</button> -->
               <a href="#" class="edit-ingredient" data-ingredient-id="{{ ingredient.id }}">Edit</a>
               <a href="#" class="delete-ingredient" data-ingredient-id="{{ ingredient.id }}">Delete</a>
             </li>
