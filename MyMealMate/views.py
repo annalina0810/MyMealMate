@@ -15,7 +15,11 @@ from http import client
 from http import cookiejar
 import json
 import http
-
+from fractions import Fraction
+import re
+from django.core.files.base import ContentFile
+import os
+import urllib.request
 
 def home(request):
     context_dict = {'nbar': 'home'}
@@ -364,12 +368,34 @@ def add_meal_of_the_day(request):
         meal = Meal()
         meal.user = request.user
         meal.name = meal_of_the_day['strMeal']
-        meal.image = meal_of_the_day['strMealThumb']
-        meal.url = meal_of_the_day['strSource']
-        meal.instructions = meal_of_the_day['strInstructions']
+        if meal_of_the_day['strMealThumb']:
+            image_url = meal_of_the_day['strMealThumb']
+            image_name, image_content = downloadImage(image_url)
+            if image_name and image_content:
+                meal.image.save(image_name, ContentFile(image_content), save=True)
+        if meal_of_the_day['strSource']:
+            meal.url = meal_of_the_day['strSource']
+        if meal_of_the_day['strInstructions']:
+            meal.instructions = meal_of_the_day['strInstructions']
         meal.save()
+        for i in meal_of_the_day['ingredients']:
+            ingredient = Ingredient.objects.create(name=i['name'], amount=i['amount'], unit=i['unit'])
+            meal.ingredients.add(ingredient)
         return redirect(reverse('MyMealMate:my_meals'))
     return redirect(reverse('MyMealMate:user_hub'))
+
+def downloadImage(image_url):
+    image_name,image_content = None,None
+    try:
+        response = urllib.request.urlopen(image_url)
+        if response.status == 200:
+            image_content = response.read()
+            image_name = os.path.basename(image_url)
+        else:
+            print("Error: Unable to fetch the image")
+    except Exception as e:
+        print(f"Error downloading image: {e}")
+    return image_name,image_content
 
 @login_required
 def userHasMeal(request,meal_name):
@@ -398,7 +424,67 @@ def set_meal_cookie(request):
     response_from_api = conn.getresponse()
 
     if response_from_api.status == 200:
-        request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
+        meal = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
+        meal = collect_ingredients(meal)
+        request.session['meal_of_the_day'] = meal
         request.session['last_set'] = str(datetime.now())
 
-    conn.close()   
+    conn.close()
+
+def collect_ingredients(meal):
+    ingredients = []
+    for i in range(1, 21):
+        ingredient_key = "strIngredient" + str(i)
+        measure_key = "strMeasure" + str(i)
+        if meal[ingredient_key] and meal[measure_key]:
+            measurement = parse_measurement(meal[measure_key])
+            ingredient = {
+                "name":meal[ingredient_key],
+                "amount":measurement["amount"],
+                "unit":measurement["unit"],
+            }
+            ingredients.append(ingredient)
+        else:
+            break
+
+    return {
+        "idMeal": meal["idMeal"],
+        "strMeal": meal["strMeal"],
+        "strDrinkAlternate": meal["strDrinkAlternate"],
+        "strCategory": meal["strCategory"],
+        "strArea": meal["strArea"],
+        "strInstructions": meal["strInstructions"],
+        "strMealThumb": meal["strMealThumb"],
+        "strTags": meal["strTags"],
+        "strYoutube": meal["strYoutube"],
+        "ingredients": ingredients,
+        "strSource": meal["strSource"],
+        "strImageSource": meal["strImageSource"],
+        "strCreativeCommonsConfirmed": meal["strCreativeCommonsConfirmed"],
+        "dateModified": meal["dateModified"]
+    }
+
+def parse_measurement(measurement):
+    amount = 1
+    unit = ""
+    if measurement.isspace():
+        return {"amount": amount, "unit": unit}
+    regex = r"(\d+\s+\d+/\d+)|(\d+/\d+)|(\d+\.\d+)|(\d+)|(\D+)"
+    matches = re.findall(regex, measurement)
+    if all((bool(match[-1]) and all(not m for m in match[:-1])) for match in matches):
+            return {"amount": 1, "unit": "".join(match[-1] for match in matches)}
+    def switch(case):
+        switcher = {
+            0: lambda s: float(s.split(' ')[0]) + Fraction(s.split(' ')[1]),
+            1: lambda s: float(Fraction(s)),
+            2: lambda s: float(s),
+            3: lambda s: int(s)
+        }
+        return switcher[case]
+    for match in matches:
+        for i in range(4):
+            if match[i]:
+                amount = switch(i)(match[i])
+        if match[4]:
+            unit += match[4]
+    return {"amount": amount, "unit": unit}
