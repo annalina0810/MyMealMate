@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 .vscode/settings.json
 
+/media/meal_images/
+/media/profile_images/
