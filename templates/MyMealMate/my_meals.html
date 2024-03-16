@@ -2,37 +2,49 @@
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
 
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/meal.css' %}">
+{% endblock %}
+
 {% block title_block %}
     My Meals
 {% endblock %}
 
 {% block body_block %}
 <h1>My Meals</h1>
+<div class="meal-list">
     {% if meals %}
     <ul>
         {% for meal in meals %}
-        {% if meal.image %}
-            <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
-        {% endif %}
         <li>
-            <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>
-        
-            {% if meal.url %}
-                || <a href="{{ meal.url }}">Recipe</a>
-            {% endif %}
-        
-            {% if meal.instructions %}
-                || Instructions: {{ meal.instructions }}
-            {% endif %}
-        
-            || Times Scheduled: {{ meal.schedCounter }}
+            <div class="meal-info">
+                {% if meal.image %}
+                    <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
+                {% endif %}
+                <div class="meal-details">
+                    <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>
+                </div>
+            </div>
+            <div class="schedule-button">
+                <form method="post" action="{% url 'MyMealMate:schedule' %}">
+                    {% csrf_token %}
+                    <button type="submit">Schedule</button>
+                </form>
+            </div>
         </li>
         {% endfor %}
     </ul>
-    {%else%}
+    {% else %}
     <p>No meals</p>
-    {%endif%}
-<ul>
-    <li><a href="{% url 'MyMealMate:new_meal' %}">Make a New Meal</a></li>
-</ul>
+    {% endif %}
+</div>
+<div class="sidebar">
+    <h2>Recent Meals</h2>
+    <ul>
+        {% for recent_meal in recent_meals %}
+            <li><a href="{% url 'MyMealMate:meal' recent_meal.slug %}">{{ recent_meal.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <p><a href="{% url 'MyMealMate:new_meal' %}">Make a New Meal</a></p>
+</div>
 {% endblock %}

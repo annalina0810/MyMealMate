@@ -48,6 +48,8 @@ class MealForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MealForm, self).__init__(*args, **kwargs)
         self.fields['name'].unique = False
+        self.fields['name'].label = 'Name (required):'
+        self.fields['url'].label = 'Recipe URL:'
 
     def save(self, commit=True):
         meal = super().save(commit=False)

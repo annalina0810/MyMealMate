@@ -1,0 +1,74 @@
+#new_meal_container {
+    padding: 20px;
+    border: 1px solid #000000;
+}
+
+#meal_form {
+    display: flex;
+    flex-direction: column;
+}
+
+.field {
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    align-self: flex-end;
+}
+
+h1 {
+    text-align: center;
+}
+
+.meal-list {
+    list-style: none;
+}
+
+.meal-info {
+    display: flex;
+    align-items: center;
+}
+
+.meal-info img {
+    max-width: 100px; /* Adjust the maximum width of the image */
+    margin-right: 20px; /* Add space between image and text */
+}
+
+.meal-details {
+    flex: 1; /* Allow the details to take up remaining space */
+}
+
+.schedule-button {
+    margin-left: 20px; /* Add space between meal details and button */
+}
+
+/* Sidebar */
+.sidebar {
+    float: right; /* Float sidebar to the right */
+    width: 25%; /* Adjust width as needed */
+}
+
+/* Clearfix */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Styling for recent meals in the sidebar */
+.sidebar h2 {
+    margin-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin-bottom: 5px;
+}
+
+/* Styling for "Make a New Meal" link */
+.sidebar p {
+    margin-top: 20px;
+}

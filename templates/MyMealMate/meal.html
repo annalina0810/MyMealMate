@@ -12,7 +12,7 @@
     <img src="{{meal.image.url}}" alt="Meal Image">
 {% endif %}
 {% if meal.url %}
-    {{meal.url}} <br>
+    <a href="{{ meal.url }}">Recipe</a> <br>
 {% endif %}
 {% if meal.instructions %}
     {{meal.instructions}}
