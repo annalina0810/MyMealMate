@@ -475,9 +475,9 @@ def parse_measurement(measurement):
             return {"amount": 1, "unit": "".join(match[-1] for match in matches)}
     def switch(case):
         switcher = {
-            0: lambda s: float(s.split(' ')[0]) + Fraction(s.split(' ')[1]),
-            1: lambda s: float(Fraction(s)),
-            2: lambda s: float(s),
+            0: lambda s: round(float(s.split(' ')[0]) + Fraction(s.split(' ')[1]),2),
+            1: lambda s: round(Fraction(s),2),
+            2: lambda s: round(float(s),2),
             3: lambda s: int(s)
         }
         return switcher[case]
