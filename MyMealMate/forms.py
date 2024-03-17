@@ -2,7 +2,7 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from MyMealMate.models import UserProfile
-from MyMealMate.models import Meal, ShoppingListItem
+from MyMealMate.models import Meal, ShoppingListItem, Ingredient
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -35,30 +35,24 @@ class EditPictureForm(forms.ModelForm):
         model = UserProfile
         fields = ('picture',)
 
-
-class MealForm(forms.ModelForm):
-    name = forms.CharField(max_length=30, help_text="Please enter the meal name.")
-    url = forms.URLField(required=False, help_text="url:")
-    instructions = forms.CharField(max_length=500, required=False, help_text="instructions")
-    schedCounter = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-    slug = forms.CharField(widget=forms.HiddenInput(), required=False)
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(MealForm, self).__init__(*args, **kwargs)
-        self.user = user
-
-    def clean_name(self):
-        cleaned_data = self.clean()
-        name = cleaned_data.get('name')
-        if Meal.objects.filter(user=self.user, slug=slugify(name)).exists():
-            self.add_error('name', "You have already a meal with that name")
-        return name
-
+class MealEditForm(forms.ModelForm):
     class Meta:
         model = Meal
-        fields = ('name', 'url', 'instructions', )
+        fields = ('name', 'image', 'url', 'instructions', )
 
+class MealForm(forms.ModelForm):
+    class Meta:
+        model = Meal
+        fields = ('name', 'image', 'url', )
+
+    def __init__(self, *args, **kwargs):
+        super(MealForm, self).__init__(*args, **kwargs)
+        self.fields['name'].unique = False
+
+class IngredientForm(forms.ModelForm):
+    class Meta:
+        model = Ingredient
+        fields = ('name', 'amount', 'unit',)
 
 class ShoppingListForm(forms.ModelForm):
     name = forms.CharField(max_length=30, help_text="Name:")

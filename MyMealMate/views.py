@@ -1,19 +1,25 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
+from django.views.decorators.csrf import csrf_exempt
 from django.template.defaultfilters import slugify
 from MyMealMate.forms import *
 from MyMealMate.models import *
-from MyMealMate.forms import MealForm
+from MyMealMate.forms import MealForm, MealEditForm
 from datetime import datetime,timedelta
 from http import client
 from http import cookiejar
 import json
 import http
-
+from fractions import Fraction
+import re
+from django.core.files.base import ContentFile
+import os
+import urllib.request
 
 def home(request):
     context_dict = {'nbar': 'home'}
@@ -181,26 +187,24 @@ def my_meals(request):
 @login_required
 def new_meal(request):
 
-    form = MealForm(request.POST or None, user=request.user)
-
     if request.method == 'POST':
-        form = MealForm(request.POST or None, user=request.user)
+        form = MealForm(request.POST, request.FILES)
         if form.is_valid():
-            # Save the new meal to the database
             meal = form.save(commit=False)
-            meal.user = request.user
+            meal.user = request.user  
             meal.save()
-            return redirect(reverse('MyMealMate:meal', kwargs={'username_slug': slugify(request.user.username), 'meal_name_slug': meal.slug}))
+            return redirect(reverse('MyMealMate:my_meals'))
     else:
-        print(form.errors)
+        form = MealForm()
 
     return render(request, 'MyMealMate/new_meal.html', {'form': form})
 
 
 @login_required
-def meal(request, username_slug, meal_name_slug):
+def meal(request, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
     context_dict = {'nbar': 'meal', "meal": meal, "username_slug": slugify(request.user.username)}
+
     """"
     # this is how you'd schedule/unschedule a meal for tomorrow
     user_schedule = Schedule.objects.get(user=request.user)
@@ -214,14 +218,80 @@ def meal(request, username_slug, meal_name_slug):
     return response
 
 
-@login_required
-def edit_meal(request, username_slug, meal_name_slug):
-    meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
-    context_dict = {'nbar': 'edit_meal', "meal": meal}
+def edit_meal(request, meal_name_slug):
+    meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
 
-    response = render(request, 'MyMealMate/edit_meal.html', context = context_dict)
-    return response
+    if request.method == 'POST':
+        form = MealEditForm(request.POST, request.FILES, instance=meal)
+        if form.is_valid():
+            meal = form.save(commit=False)
+            # Save the meal and retrieve the updated ingredients list
+            ingredients_list = request.POST.getlist('ingredients')
+            meal.save()
+            return render(request, 'MyMealMate/meal.html', {'meal': meal, 'ingredients_list': ingredients_list})
+    else:
+        form = MealEditForm(instance=meal)
+    return render(request, 'MyMealMate/edit_meal.html', {'form': form, 'meal': meal})
 
+@csrf_exempt
+def add_ingredient(request, meal_name_slug):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        amount = request.POST.get('amount')
+        unit = request.POST.get('unit')
+        meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
+
+        # Create the new ingredient and associate it with the meal
+        ingredient = Ingredient.objects.create(name=name, amount=amount, unit=unit)
+        meal.ingredients.add(ingredient)
+
+        return JsonResponse({'id': ingredient.id})
+
+@csrf_exempt
+def edit_ingredient(request, meal_name_slug):
+    if request.method == 'GET':
+        ingredient_id = request.GET.get('ingredient_id')
+        try:
+            ingredient = Ingredient.objects.get(id=ingredient_id)
+            data = {
+                'name': ingredient.name,
+                'amount': ingredient.amount,
+                'unit': ingredient.unit
+            }
+            response = JsonResponse(data)
+            
+            return response
+        except Ingredient.DoesNotExist:
+            return JsonResponse({'error': 'Ingredient not found'}, status=404)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def delete_ingredient(request, meal_name_slug):
+    if request.method == 'POST':
+        # Retrieve the meal
+        meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
+        ingredient_id = request.POST.get('ingredient_id')
+        # Retrieve the ingredient
+        ingredient = get_object_or_404(Ingredient, id=ingredient_id)
+        
+        # Remove the ingredient from the meal
+        meal.ingredients.remove(ingredient)
+        
+        # Delete the ingredient itself
+        ingredient.delete()
+        
+        return JsonResponse({'message': 'Ingredient deleted successfully'})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+def delete_meal(request, meal_name_slug):
+    meal = get_object_or_404(Meal, slug=meal_name_slug)
+
+    if request.method == 'POST':
+        meal.delete()
+
+    return redirect(reverse('MyMealMate:my_meals'))
 
 @login_required
 def shopping_list(request):
@@ -298,12 +368,34 @@ def add_meal_of_the_day(request):
         meal = Meal()
         meal.user = request.user
         meal.name = meal_of_the_day['strMeal']
-        meal.image = meal_of_the_day['strMealThumb']
-        meal.url = meal_of_the_day['strSource']
-        meal.instructions = meal_of_the_day['strInstructions']
+        if meal_of_the_day['strMealThumb']:
+            image_url = meal_of_the_day['strMealThumb']
+            image_name, image_content = downloadImage(image_url)
+            if image_name and image_content:
+                meal.image.save(image_name, ContentFile(image_content), save=True)
+        if meal_of_the_day['strSource']:
+            meal.url = meal_of_the_day['strSource']
+        if meal_of_the_day['strInstructions']:
+            meal.instructions = meal_of_the_day['strInstructions']
         meal.save()
+        for i in meal_of_the_day['ingredients']:
+            ingredient = Ingredient.objects.create(name=i['name'], amount=i['amount'], unit=i['unit'])
+            meal.ingredients.add(ingredient)
         return redirect(reverse('MyMealMate:my_meals'))
     return redirect(reverse('MyMealMate:user_hub'))
+
+def downloadImage(image_url):
+    image_name,image_content = None,None
+    try:
+        response = urllib.request.urlopen(image_url)
+        if response.status == 200:
+            image_content = response.read()
+            image_name = os.path.basename(image_url)
+        else:
+            print("Error: Unable to fetch the image")
+    except Exception as e:
+        print(f"Error downloading image: {e}")
+    return image_name,image_content
 
 @login_required
 def userHasMeal(request,meal_name):
@@ -332,7 +424,67 @@ def set_meal_cookie(request):
     response_from_api = conn.getresponse()
 
     if response_from_api.status == 200:
-        request.session['meal_of_the_day'] = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
+        meal = json.loads(response_from_api.read().decode('utf-8'))["meals"][0]
+        meal = collect_ingredients(meal)
+        request.session['meal_of_the_day'] = meal
         request.session['last_set'] = str(datetime.now())
 
-    conn.close()   
+    conn.close()
+
+def collect_ingredients(meal):
+    ingredients = []
+    for i in range(1, 21):
+        ingredient_key = "strIngredient" + str(i)
+        measure_key = "strMeasure" + str(i)
+        if meal[ingredient_key] and meal[measure_key]:
+            measurement = parse_measurement(meal[measure_key])
+            ingredient = {
+                "name":meal[ingredient_key],
+                "amount":measurement["amount"],
+                "unit":measurement["unit"],
+            }
+            ingredients.append(ingredient)
+        else:
+            break
+
+    return {
+        "idMeal": meal["idMeal"],
+        "strMeal": meal["strMeal"],
+        "strDrinkAlternate": meal["strDrinkAlternate"],
+        "strCategory": meal["strCategory"],
+        "strArea": meal["strArea"],
+        "strInstructions": meal["strInstructions"],
+        "strMealThumb": meal["strMealThumb"],
+        "strTags": meal["strTags"],
+        "strYoutube": meal["strYoutube"],
+        "ingredients": ingredients,
+        "strSource": meal["strSource"],
+        "strImageSource": meal["strImageSource"],
+        "strCreativeCommonsConfirmed": meal["strCreativeCommonsConfirmed"],
+        "dateModified": meal["dateModified"]
+    }
+
+def parse_measurement(measurement):
+    amount = 1
+    unit = ""
+    if measurement.isspace():
+        return {"amount": amount, "unit": unit}
+    regex = r"(\d+\s+\d+/\d+)|(\d+/\d+)|(\d+\.\d+)|(\d+)|(\D+)"
+    matches = re.findall(regex, measurement)
+    if all((bool(match[-1]) and all(not m for m in match[:-1])) for match in matches):
+            return {"amount": 1, "unit": "".join(match[-1] for match in matches)}
+    def switch(case):
+        switcher = {
+            0: lambda s: float(s.split(' ')[0]) + Fraction(s.split(' ')[1]),
+            1: lambda s: float(Fraction(s)),
+            2: lambda s: float(s),
+            3: lambda s: int(s)
+        }
+        return switcher[case]
+    for match in matches:
+        for i in range(4):
+            if match[i]:
+                amount = switch(i)(match[i])
+        if match[4]:
+            unit += match[4]
+    return {"amount": amount, "unit": unit}
