@@ -16,20 +16,27 @@
     {% if meal.image %}
         <img id="meal" src="{{meal.image.url}}" alt="Meal Image">
     {% endif %}
+    <h3>Instructions</h3>
     {% if meal.instructions %}
         {{meal.instructions}}
+    {% else %}
+        No instructions
     {% endif %}
     <h3>Ingredients</h3>
+    {% if meal.ingredients.all %}
     <ul>
         {% for ingredient in meal.ingredients.all %}
             <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}</li>
         {% endfor %}
     </ul>
+    {% else %}
+        No ingredients
+    {% endif %}
     <br>
     <div id="links">
-        <a href="{% url 'MyMealMate:edit_meal' meal.slug %}">Edit Meal</a>
+        <a href="{% url 'MyMealMate:edit_meal' meal.slug %}" class="button_links">Edit Meal</a>
         {% if meal.url %}
-            <a href="{{ meal.url }}">Link to Recipe</a> <br>
+            <a href="{{ meal.url }}" class="button_links">Link to Recipe</a> <br>
         {% endif %}
     </div>
 </div>
