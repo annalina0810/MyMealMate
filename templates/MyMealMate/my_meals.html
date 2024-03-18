@@ -32,7 +32,7 @@
     {%else%}
     <p>No meals</p>
     {%endif%}
-<ul>
-    <li><a href="{% url 'MyMealMate:new_meal' %}">Make a New Meal</a></li>
-</ul>
+    
+<button class="button" onclick="window.location.href = '{% url 'MyMealMate:new_meal' %}';">Make a New Meal</button>
+
 {% endblock %}

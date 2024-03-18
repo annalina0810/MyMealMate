@@ -25,5 +25,5 @@ urlpatterns = [
     path('shopping_list/clicked/<int:item_id>/', views.clicked_item, name='clicked'),
     path('shopping_list/edit_shopping_list/', views.edit_shopping_list, name='edit_shopping_list'),
     path('logout/', views.user_logout, name='logout'),
-    path('delete_account/', views.delete_account, name="delete_account"),
+    path('profile/edit_profile/delete_account/', views.delete_account, name="delete_account"),
 ]

@@ -24,7 +24,8 @@
     {% endfor %}
 </ul>
 <br>
-<a href="{% url 'MyMealMate:edit_meal' meal.slug %}">Edit Meal</a><br>
-<a href="{% url 'MyMealMate:my_meals' %}">All Meals</a>
+
+<button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_meal' meal.slug %}';">Edit Meal</button>
+<button class="button" onclick="window.location.href = '{% url 'MyMealMate:my_meals' %}';">All Meals</button>
 
 {% endblock %}
