@@ -1,0 +1,141 @@
+#new_meal_container {
+    padding: 20px;
+    border: 1px solid #000000;
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    min-height: 280px;
+}
+
+#make_meal_container {
+    padding: 20px;
+    border: 1px solid #000000;
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+#meal_form {
+    display: flex;
+    flex-direction: column;
+}
+
+.field {
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    align-self: flex-end;
+}
+
+h1 {
+    text-align: center;
+}
+
+.content {
+    display: inline-block;
+}
+
+.meal-list {
+    padding: 20px;
+    border: 1px solid #000000;
+    width: 70%;
+    float: left;
+    box-sizing: border-box;
+    margin-right: 5px;
+    margin-bottom: 15px;
+    overflow-y: scroll; 
+    height:400px;
+}
+
+.meal-list ul {
+    list-style-type: none;
+}
+
+.meal-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.meal-info img {
+    max-width: 100px; /* Adjust the maximum width of the image */
+    margin-right: 20px; /* Add space between image and text */
+}
+
+.meal-details {
+    flex: 1; /* Allow the details to take up remaining space */
+}
+
+/* Sidebar */
+.sidebar {
+    padding: 30px;
+    border: 1px solid #000000;
+    float: right;
+    width: 25%; 
+    box-sizing: border-box;
+}
+
+/* Styling for recent meals in the sidebar */
+.sidebar h2 {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li {
+    margin-bottom: 5px;
+}
+
+.sidebar p {
+    margin-top: 20px;
+}
+
+#meal {
+    float: right;
+    width: 20%;
+    max-width: 200px;
+    margin: 20px;
+    display: block;
+}
+
+#links {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+}
+
+button {
+    display: inline-block;
+    text-align: center;
+    padding: 10px 20px;
+    margin: 10px;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #3CB371;
+  }
+
+.delete {
+    background-color: #f1807e;
+}
+
+.button_links {
+    display: inline-block;
+    text-align: center;
+    padding: 10px 20px;
+    margin: 10px;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #3CB371;
+}
+
+/* Media Query for smaller screens */
+@media screen and (max-width: 768px) {
+    .meal-list, .sidebar {
+        width: 100%; /* Each section takes up the full width on smaller screens */
+        float: none; /* Remove float to ensure they stack vertically */
+    }
+}

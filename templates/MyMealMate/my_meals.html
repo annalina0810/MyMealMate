@@ -2,37 +2,45 @@
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
 
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/meal.css' %}">
+{% endblock %}
+
 {% block title_block %}
     My Meals
 {% endblock %}
 
 {% block body_block %}
 <h1>My Meals</h1>
-    {% if meals %}
-    <ul>
-        {% for meal in meals %}
-        {% if meal.image %}
-            <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
+<div class="content">
+    <div class="meal-list">
+        {% if meals %}
+        <ul>
+            {% for meal in meals %}
+            <li>
+                <div class="meal-info">
+                    {% if meal.image %}
+                        <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
+                    {% endif %}
+                    <div class="meal-details">
+                        <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No meals</p>
         {% endif %}
-        <li>
-            <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>
-        
-            {% if meal.url %}
-                || <a href="{{ meal.url }}">Recipe</a>
-            {% endif %}
-        
-            {% if meal.instructions %}
-                || Instructions: {{ meal.instructions }}
-            {% endif %}
-        
-            || Times Scheduled: {{ meal.schedCounter }}
-        </li>
-        {% endfor %}
-    </ul>
-    {%else%}
-    <p>No meals</p>
-    {%endif%}
-    
-<button class="button" onclick="window.location.href = '{% url 'MyMealMate:new_meal' %}';">Make a New Meal</button>
-
+    </div>
+    <div class="sidebar">
+        <h2>Recent Meals</h2>
+        <ul>
+            {% for recent_meal in recent_meals %}
+                <li><a href="{% url 'MyMealMate:meal' recent_meal.slug %}">{{ recent_meal.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <p><a href="{% url 'MyMealMate:new_meal' %}" class="button_links">Make a New Meal</a></p>
+    </div>
+</div>
 {% endblock %}
