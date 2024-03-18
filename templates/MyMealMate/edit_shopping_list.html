@@ -6,32 +6,48 @@
     Edit Shopping List
 {% endblock %}
 
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+{% block script_block %}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="{% static 'js/edit_shopping_list_items.js' %}"></script>
+{% endblock %}
+
+
 {% block body_block %}
 <h1>Edit Shopping List</h1>
     {%if items%}
-        {%for item in items%}
-            {% if item.checked %}
-            <s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s>
-            {%else%}
-            {{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
-            {%endif%}<br/>
-        {%endfor%}
+    <form name="edit-form" method="post">
+        {% csrf_token %}
+          <ul id="item-list">
+              {%for item in items%}
+                {% if not item.checked %}
+                    <li>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="edit-item" data-item-id="{{ item.id }}"><i class="fa fa-pencil"></i></button>
+                    <button class="delete-item" data-item-id="{{ item.id }}"><i class="fa fa-trash"></i></button> </li>
+                {%endif%}
+              {%endfor%}
+          </ul>
+    </form>
     {%endif%}
     <br/>
     Add a new Item:
-    <form id="shopping_list_form" method="post" action="{%url 'MyMealMate:edit_shopping_list' %}">
+    <form method="post" id="add-item-form">
         {% csrf_token %}
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-            {% endfor %}
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field }}
-            {% endfor %}
-            <input class="button" type="submit" name="submit" value="Add Item" />
+        <input type="text" id="new-item-name" placeholder="Item name" required>
+        <input type="number" id="new-item-amount" placeholder="Amount">
+        <input type="text" id="new-item-unit" placeholder="Unit">
+        <button class="button" type="button" id="add-item">Add Item</button>
     </form>
-<br/>
+<ul>
+{%for item in items%}
+    {% if item.checked %}
+    <li><s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s></li>
+    {%endif%}
+{%endfor%}
+</ul>
 <div>
     <button class="button" onclick="window.location.href ='{% url 'MyMealMate:shopping_list' %}';">Done</button>
 </div>
