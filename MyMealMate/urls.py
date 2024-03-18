@@ -24,6 +24,9 @@ urlpatterns = [
     path('shopping_list/clear_completed/', views.clear_completed, name='clear_completed'),
     path('shopping_list/clicked/<int:item_id>/', views.clicked_item, name='clicked'),
     path('shopping_list/edit_shopping_list/', views.edit_shopping_list, name='edit_shopping_list'),
+    path('shopping_list/edit_shopping_list/add_item', views.add_shopping_list_item, name='add_item'),
+    path('shopping_list/edit_shopping_list/edit_item', views.edit_shopping_list_item, name='edit_item'),
+    path('shopping_list/edit_shopping_list/delete_item', views.delete_shopping_list_item, name='delete_item'),
     path('logout/', views.user_logout, name='logout'),
     path('delete_account/', views.delete_account, name="delete_account"),
 ]

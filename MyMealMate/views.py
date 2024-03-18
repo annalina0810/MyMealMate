@@ -335,7 +335,6 @@ def clear_completed(request):
 
 @login_required
 def edit_shopping_list(request):
-    # ToDo: don't allow unit without amount
     shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
     items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
     form = ShoppingListForm()
@@ -343,8 +342,14 @@ def edit_shopping_list(request):
     if request.method == 'POST':
         form = ShoppingListForm(request.POST)
         if form.is_valid():
-            amount = int(form.data["amount"]) if form.data["amount"] != "" else 0
-            item = shopping_list.add_item(form.data['name'], amount, form.data["unit"])
+            # get the item that was edited
+            item = ShoppingListItem.objects.get(id=form.data["item-id"])
+
+            # update values and save item
+            item.name = form.data["name"]
+            item.amount = int(form.data["amount"]) if form.data["amount"] != "" else 1
+            item.unit = form.data["unit"]
+            item.save()
 
             return redirect(reverse('MyMealMate:edit_shopping_list'))
     else:
@@ -354,6 +359,59 @@ def edit_shopping_list(request):
 
     response = render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     return response
+
+
+@csrf_exempt
+def add_shopping_list_item(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        amount = int(request.POST.get('amount')) if request.POST.get('amount') != "" else 1
+        unit = request.POST.get('unit')
+
+        # add the item to the shopping list
+        shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
+        item = shopping_list.add_item(name, amount, unit)
+        item.save()
+        return JsonResponse({'id': item.id})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+def edit_shopping_list_item(request):
+    if request.method == 'GET':
+        item_id = request.GET.get('item_id')
+        try:
+            item = ShoppingListItem.objects.get(id=item_id)
+            data = {
+                'name': item.name,
+                'amount': item.amount,
+                'unit': item.unit
+            }
+            response = JsonResponse(data)
+
+            return response
+        except ShoppingListItem.DoesNotExist:
+            return JsonResponse({'error': 'Item not found'}, status=404)
+
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+def delete_shopping_list_item(request):
+    if request.method == 'POST':
+
+        item_id = request.POST.get('item_id')
+        # Retrieve the item
+        item = get_object_or_404(ShoppingListItem, id=item_id)
+
+        # Delete the item
+        item.delete()
+
+        return JsonResponse({'message': 'Item deleted successfully'})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
 @login_required

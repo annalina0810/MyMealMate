@@ -57,7 +57,7 @@ class ShoppingList(models.Model):
         initial_items = ShoppingListItem.objects.filter(shoppingList=self, name=name)
 
         for item in initial_items:  # iterate over all items with the same name
-            if item.unit == unit:  # if one of them has the same unit, add the amount
+            if item.unit == unit and not item.checked:  # if one of them has the same unit, add the amount
                 item.amount += amount
                 item.save()
                 return item

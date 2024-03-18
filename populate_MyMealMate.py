@@ -13,32 +13,32 @@ def populate():
 
     # Create User "test_user" with ShoppingList and Schedule
     UserModel = get_user_model()
-    if not UserModel.objects.filter(username='test_user').exists():  # doesn't actually work apparently
-        test_user = UserModel.objects.create_user('test_user', password='123')
-        test_user.is_superuser = True
-        test_user.is_staff = True
+    if not UserModel.objects.filter(username='test_user').exists():
+        test_user = UserModel.objects.create_user('test_user', password='123', is_superuser=True, is_staff=True)
+        profile = UserProfile.objects.create(user=test_user)
         test_user.save()
+        profile.save()
     else:
         test_user = UserModel.objects.get(username="test_user")
-        test_user.save()
+        profile = UserProfile.objects.get(user=test_user)
 
-    user_shopping_list = ShoppingList(user=test_user)
+    user_shopping_list = ShoppingList.objects.get_or_create(user=test_user)[0]
     user_shopping_list.save()
 
-    user_schedule = Schedule(user=test_user)
+    user_schedule = Schedule.objects.get_or_create(user=test_user)[0]
     user_schedule.save()
 
     meals = [{"name": "Spaghetti Bolognese", "url": "https://www.recipetineats.com/spaghetti-bolognese/",
-              "instructions": "Cook with love"},
-             {"name": "Pizza", "url": None, "instructions": None},
-             {"name": "Chili con Carne", "url": None, "instructions": None},
-             {"name": "Porridge", "url": None, "instructions": None},
+              "instructions": "Cook with love", "image": None},
+             {"name": "Pizza", "url": None, "instructions": None, "image": None},
+             {"name": "Chili con Carne", "url": None, "instructions": None, "image": None},
+             {"name": "Porridge", "url": None, "instructions": None, "image": None},
              ]
 
     ingredients = [{"name": "Spaghetti", "amount": "300", "unit": "g"},
                    {"name": "Minced Meat", "amount": "500", "unit": "g"},
                    {"name": "Tomato Sauce", "amount": "1", "unit": "kg"},
-                   {"name": "Parmesan", "amount": None, "unit": None},
+                   {"name": "Parmesan", "amount": "1", "unit": None},
                    {"name": "Tomato Sauce", "amount": "300", "unit": "ml"},
                    ]
 
