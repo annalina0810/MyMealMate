@@ -28,7 +28,7 @@
     <ul id="ingredients"></ul>
     <form method="POST" action="{% url 'MyMealMate:add_meal_of_the_day' %}" class="add_meal_of_the_day">
         {% csrf_token %}
-        <button type="submit">Add to my meals</button>  
+        <button class="button" type="submit">Add to my meals</button>  
         <script>displayAddButton('{{ has_meal_of_the_day }}')</script>
     </form>
 </div>
