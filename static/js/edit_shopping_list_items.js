@@ -1,4 +1,5 @@
-// jQuery document ready function
+let currentlyEditedItemId = null;
+
 $(document).ready(function() {
   // Handle adding new items without refreshing the page
   $("#add-item").on("click", function() {
@@ -35,6 +36,11 @@ $(document).ready(function() {
 
     var itemId = $(this).data("item-id");
     var listItem = $(this).closest("li");
+    if (currentlyEditedItemId) {
+        alert('You can only edit one item at a time.');
+        return;
+    }
+    currentlyEditedItemId = itemId;
 
     // Convert item into form for editing
     var editForm = '<form class="edit-form" data-id="">';
@@ -66,6 +72,9 @@ $(document).ready(function() {
     listItem.html(editForm);
 
    });
+    $('#edit-form').click(function() {
+        currentlyEditedItemId = null;
+    });
 
   $("#item-list").on("click", ".delete-item", function() {
     var itemId = $(this).data("item-id");

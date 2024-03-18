@@ -22,13 +22,12 @@
         {% csrf_token %}
           <ul id="item-list">
               {%for item in items%}
-                <li>{% if item.checked %}
-                <s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s>
-                {%else%}
-                {{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
-                {%endif%} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="edit-item" data-item-id="{{ item.id }}"><i class="fa fa-pencil"></i></button>
-                <button class="delete-item" data-item-id="{{ item.id }}"><i class="fa fa-trash"></i></button> </li>
+                {% if not item.checked %}
+                    <li>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="edit-item" data-item-id="{{ item.id }}"><i class="fa fa-pencil"></i></button>
+                    <button class="delete-item" data-item-id="{{ item.id }}"><i class="fa fa-trash"></i></button> </li>
+                {%endif%}
               {%endfor%}
           </ul>
     </form>
@@ -42,7 +41,13 @@
         <input type="text" id="new-item-unit" placeholder="Unit">
         <button class="button" type="button" id="add-item">Add Item</button>
     </form>
-<br/>
+<ul>
+{%for item in items%}
+    {% if item.checked %}
+    <li><s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s></li>
+    {%endif%}
+{%endfor%}
+</ul>
 <div>
     <button class="button" onclick="window.location.href ='{% url 'MyMealMate:shopping_list' %}';">Done</button>
 </div>
