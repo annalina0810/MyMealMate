@@ -66,7 +66,7 @@ class IngredientForm(forms.ModelForm):
 
 class ShoppingListForm(forms.ModelForm):
     name = forms.CharField(max_length=30, help_text="Name:")
-    amount = forms.IntegerField(help_text="Amount:", required=False)
+    amount = forms.IntegerField(help_text="Amount:", required=False, min_value=0)
     unit = forms.CharField(max_length=30, help_text="Unit:", required=False)
     checked = forms.BooleanField(widget=forms.HiddenInput(), required=False)
 

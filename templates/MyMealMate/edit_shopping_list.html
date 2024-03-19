@@ -30,6 +30,11 @@
                 {%endif%}
               {%endfor%}
           </ul>
+        {% if error %}
+            <script>
+                alert("{{ error }}");
+            </script>
+        {% endif %}
     </form>
     {%endif%}
     <br/>
