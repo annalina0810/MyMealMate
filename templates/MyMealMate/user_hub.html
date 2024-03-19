@@ -10,6 +10,10 @@
     <script src="{% static 'js/meal_of_the_day.js' %}"></script>
 {% endblock %}
 
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/user_hub.css' %}">
+{% endblock %}
+
 {% block body_block %}
 {% if user.first_name %}
     <h1>{{ user.first_name }}'s Hub</h1>
@@ -17,20 +21,26 @@
     <h1>User Hub</h1>
 {% endif %}
 
-<ul>
-    <li><a href="{% url 'MyMealMate:shopping_list' %}">My Shopping List</a></li>
-    <li><a href="{% url 'MyMealMate:my_meals' %}">My Meals</a></li>
-</ul>
+<div class="user_hub">
+    <div class="upcoming_meals">
+        <h1>My Meals this Upcoming Week</h1>
+    </div>
+    <div class="shopping_list">
+        <h1>My Shopping List</h1>
+    </div>
+</div>
 
 <div class="meal_of_the_day" meal_of_the_day="{{ meal_of_the_day }}">
-    <h1>Meal of The Day:<br/>{{ meal_of_the_day.strMeal }}</h1>
-    <br><img class='thumbnail' src="{{ meal_of_the_day.strMealThumb }}"/>
-    <ul id="ingredients"></ul>
-    <form method="POST" action="{% url 'MyMealMate:add_meal_of_the_day' %}" class="add_meal_of_the_day">
-        {% csrf_token %}
-        <button type="submit">Add to my meals</button>  
-        <script>displayAddButton('{{ has_meal_of_the_day }}')</script>
-    </form>
+    <h2>Meal of The Day: {{ meal_of_the_day.strMeal }}</h2>
+    <div class="meal_deets">
+        <br><img class='thumbnail' src="{{ meal_of_the_day.strMealThumb }}"/>
+        <ul id="ingredients"></ul>
+        <form method="POST" action="{% url 'MyMealMate:add_meal_of_the_day' %}" class="add_meal_of_the_day">
+            {% csrf_token %}
+            <button type="submit">Add to My Meals</button>  
+            <script>displayAddButton('{{ has_meal_of_the_day }}')</script>
+        </form>
+    </div>
 </div>
 
 {% endblock %}
