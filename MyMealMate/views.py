@@ -195,7 +195,7 @@ def new_meal(request):
             meal = form.save(commit=False)
             meal.user = request.user  
             meal.save()
-            return redirect(reverse('MyMealMate:my_meals'))
+            return redirect(reverse('MyMealMate:edit_meal', kwargs={'meal_name_slug': meal.slug}))
     else:
         form = MealForm()
 
