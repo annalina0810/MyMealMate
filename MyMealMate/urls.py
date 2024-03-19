@@ -28,5 +28,5 @@ urlpatterns = [
     path('shopping_list/edit_shopping_list/edit_item', views.edit_shopping_list_item, name='edit_item'),
     path('shopping_list/edit_shopping_list/delete_item', views.delete_shopping_list_item, name='delete_item'),
     path('logout/', views.user_logout, name='logout'),
-    path('delete_account/', views.delete_account, name="delete_account"),
+    path('profile/edit_profile/delete_account/', views.delete_account, name="delete_account"),
 ]

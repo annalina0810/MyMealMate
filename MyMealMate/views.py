@@ -177,8 +177,10 @@ def my_meals(request):
     context_dict = {'nbar': 'my_meals'}
   
     meals = Meal.objects.filter(user=request.user)
+    recent_meals = Meal.objects.order_by('-id')[:5]
     context_dict["meals"] = meals
     context_dict["username_slug"] = slugify(request.user.username)
+    context_dict["recent_meals"] = recent_meals
 
     response = render(request, 'MyMealMate/my_meals.html', context=context_dict)
     return response
