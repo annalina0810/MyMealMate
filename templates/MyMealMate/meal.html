@@ -2,30 +2,42 @@
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
 
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/meal.css' %}">
+{% endblock %}
+
 {% block title_block %}
     Meal
 {% endblock %}
 
 {% block body_block %}
 <h1>{{meal.name}}</h1>
-{% if meal.image %}
-    <img src="{{meal.image.url}}" alt="Meal Image">
-{% endif %}
-{% if meal.url %}
-    {{meal.url}} <br>
-{% endif %}
-{% if meal.instructions %}
-    {{meal.instructions}}
-{% endif %}
-<h3>Ingredients</h3>
-<ul>
-    {% for ingredient in meal.ingredients.all %}
-        <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}</li>
-    {% endfor %}
-</ul>
-<br>
-
-<button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_meal' meal.slug %}';">Edit Meal</button>
-<button class="button" onclick="window.location.href = '{% url 'MyMealMate:my_meals' %}';">All Meals</button>
-
+<div id="new_meal_container">
+    {% if meal.image %}
+        <img id="meal" src="{{meal.image.url}}" alt="Meal Image">
+    {% endif %}
+    <h3>Instructions</h3>
+    {% if meal.instructions %}
+        {{meal.instructions}}
+    {% else %}
+        No instructions
+    {% endif %}
+    <h3>Ingredients</h3>
+    {% if meal.ingredients.all %}
+    <ul>
+        {% for ingredient in meal.ingredients.all %}
+            <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        No ingredients
+    {% endif %}
+    <br>
+    <div id="links">
+        <a href="{% url 'MyMealMate:edit_meal' meal.slug %}" class="button_links">Edit Meal</a>
+        {% if meal.url %}
+            <a href="{{ meal.url }}" class="button_links">Link to Recipe</a> <br>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

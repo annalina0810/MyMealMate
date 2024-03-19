@@ -25,7 +25,7 @@ $(document).ready(function() {
         },
         error: function(error) {
             console.log("Error adding item")
-            console.log(error);
+            alert(error.responseJSON.error)
         }
       });
     }
@@ -48,7 +48,7 @@ $(document).ready(function() {
     editForm += '<input type="text" id = "edit-name" name="name">';
     editForm += '<input type="number" id = "edit-amount" name="amount">';
     editForm += '<input type="text" id = "edit-unit"  name="unit" ">';
-    editForm += '<button type="submit">Save</button>';
+    editForm += '<button class = "button" type="submit">Save</button>';
     editForm += '</form>';
 
     // Send AJAX request to get item details
@@ -65,6 +65,7 @@ $(document).ready(function() {
             $("#edit-unit").val(response.unit);
         },
         error: function(xhr, textStatus, errorThrown) {
+            alert(error.responseJSON.error)
             console.log("Error:", errorThrown);
         }
     });
