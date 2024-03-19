@@ -8,6 +8,8 @@ from MyMealMate.models import *
 from MyMealMate.forms import *
 from MyMealMate.views import *
 
+# Anna's tests
+
 def create_user_object():
     """
     Helper function to create a User object.
@@ -83,21 +85,20 @@ class TestShoppingListFunctionality(TestCase):
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.json(), {'error': 'Method not allowed'})
 
-
+# Katie's tests
 class LoginTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='testpassword')
 
     def test_login_success(self):
-        response = self.client.post("{% url 'MyMealMate: home}' %}", {'username': 'testuser', 'password': 'testpassword'})
+        response = self.client.post(reverse('MyMealMate:home'), {'username': 'testUser', 'password': 'testPassword'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "{% url 'MyMealMate: user_hub}' %}")
+        self.assertEqual(response.url, reverse('MyMealMate:user_hub'))
 
     def test_login_fail(self):
-        response = self.client.post("{% url 'MyMealMate: home}' %}", {'username': 'wronguser', 'password': 'wrongpassword'})
+        response = self.client.post(reverse('MyMealMate:home'), {'username': 'wronguser', 'password': 'wrongpassword'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.url, "{% url 'MyMealMate: home}' %}")
 
 class MealViewsTestCase(TestCase):
     def setUp(self):
