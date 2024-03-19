@@ -48,7 +48,7 @@ $(document).ready(function() {
     editForm += '<input type="text" id = "edit-name" name="name">';
     editForm += '<input type="number" id = "edit-amount" name="amount">';
     editForm += '<input type="text" id = "edit-unit"  name="unit" ">';
-    editForm += '<button type="submit">Save</button>';
+    editForm += '<button class = "button" type="submit">Save</button>';
     editForm += '</form>';
 
     // Send AJAX request to get item details

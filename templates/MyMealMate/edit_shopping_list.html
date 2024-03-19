@@ -25,8 +25,8 @@
                 {% if not item.checked %}
                     <li>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="edit-item" data-item-id="{{ item.id }}"><i class="fa fa-pencil"></i></button>
-                    <button class="delete-item" data-item-id="{{ item.id }}"><i class="fa fa-trash"></i></button> </li>
+                    <a href="#" class="edit-item" data-item-id="{{ item.id }}"><i class="fa fa-pencil"></i></a>
+                    <a href="#" class="delete-item" data-item-id="{{ item.id }}"><i class="fa fa-trash"></i></a> </li>
                 {%endif%}
               {%endfor%}
           </ul>
