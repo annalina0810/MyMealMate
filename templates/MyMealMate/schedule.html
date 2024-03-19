@@ -75,6 +75,15 @@ function today() {
 
 {% block script_block %}
 <script src="{% static 'js/create_schedule.js' %}"></script>
+<script>
+    var selected_day = new Date().getDate();
+    var selected_month = new Date().getMonth();
+    var selected_year = new Date().getFullYear();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        createCalendar(selected_month, selected_year);
+    });
+</script>
 {% endblock %}
 
 {% block body_block %}

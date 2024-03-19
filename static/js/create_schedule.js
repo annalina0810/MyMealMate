@@ -10,15 +10,7 @@
 // so for if the first day of the month is a Wednesday, then the first 2 days of the month will be empty
 // then the days of the month will be filled in, and then the last days of the month will be empty until the end of the wee
 
-var selected_day = new Date().getDate();
-var selected_month = new Date().getMonth();
-var selected_year = new Date().getFullYear();
-
-document.addEventListener('DOMContentLoaded', function() {
-    createCalendar(selected_month, selected_year);
-});
-
-function createCalendar(month, year) {
+function createCalendar(month, year, schedule) {
     var days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     var first_day = new Date(year, month, 1);
     var last_day = new Date(year, month + 1, 0);
@@ -44,6 +36,8 @@ function createCalendar(month, year) {
     calendar += "</table>";
     document.getElementById("calendar").innerHTML = calendar;
 }
+
+
 
 function previousMonth() {
     selected_month -= 1;

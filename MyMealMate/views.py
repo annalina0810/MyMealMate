@@ -351,6 +351,10 @@ def edit_shopping_list(request):
 
 @login_required
 def schedule(request):
+    
+    for day in Day.objects.all():
+        print(day)
+
     context_dict = {'nbar': 'schedule'}
     
     response = render(request, 'MyMealMate/schedule.html', context = context_dict)

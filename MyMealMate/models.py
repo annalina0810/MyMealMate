@@ -6,8 +6,8 @@ from django.conf import settings
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
     picture = models.ImageField(upload_to='profile_images', blank=True, default="default_profile.jpg")
+    schedule = models.OneToOneField('Schedule', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
