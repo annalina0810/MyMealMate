@@ -25,7 +25,7 @@ $(document).ready(function() {
         },
         error: function(error) {
             console.log("Error adding item")
-            console.log(error);
+            alert(error.responseJSON.error)
         }
       });
     }
@@ -65,6 +65,7 @@ $(document).ready(function() {
             $("#edit-unit").val(response.unit);
         },
         error: function(xhr, textStatus, errorThrown) {
+            alert(error.responseJSON.error)
             console.log("Error:", errorThrown);
         }
     });

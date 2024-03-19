@@ -338,6 +338,7 @@ def edit_shopping_list(request):
     shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
     items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
     form = ShoppingListForm()
+    context_dict = {'nbar': 'shopping_list', "items": items, "form": form}
 
     if request.method == 'POST':
         form = ShoppingListForm(request.POST)
@@ -352,10 +353,13 @@ def edit_shopping_list(request):
             item.save()
 
             return redirect(reverse('MyMealMate:edit_shopping_list'))
+        else:
+            context_dict["error"] = "Amount can not be negative"
+            return render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     else:
         print(form.errors)
 
-    context_dict = {'nbar': 'shopping_list', "items": items, "form": form}
+    context_dict["items"] = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
 
     response = render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     return response
@@ -366,6 +370,8 @@ def add_shopping_list_item(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         amount = int(request.POST.get('amount')) if request.POST.get('amount') != "" else 1
+        if amount < 0:
+            return JsonResponse({"error": "Amount can not be negative"}, status=400)
         unit = request.POST.get('unit')
 
         # add the item to the shopping list
