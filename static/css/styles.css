@@ -120,14 +120,29 @@ form input{
 }
 
 #profilePic{
-    width: 10%;
+    width: 20%;   
 }
 
 .profileButtons{
     clear: both;
 }
 
+.contentHolder{
+    width: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 20px;
+    margin: 0 0;
+    background-color: #d4fcd5;
+}
+
+.contentHolder, #profilePic, #editProfilePic{
+    border: 5px outset darkolivegreen;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
 #editProfilePic{
-    width: 15%;
-    padding-left: 5%
+    margin-left: 15%;
+    width: 20%
 }
