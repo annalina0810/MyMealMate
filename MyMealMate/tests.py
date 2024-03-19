@@ -102,7 +102,26 @@ class LoginTest(TestCase):
 
 class MealViewsTestCase(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.client.login(username='testuser', password='testpassword')
-        self.meal = Meal.objects.create(name='Test Meal', user=self.user)
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='testuser', password='password')
+
+    def test_new_meal(self):
+        request = self.factory.post(reverse('MyMealMate:new_meal'), {'name': 'Test Meal'})
+        request.user = self.user
+        response = new_meal(request)
+        self.assertEqual(response.status_code, 302)  # Check if redirect occurs
+        self.assertTrue(Meal.objects.filter(user=self.user, name='Test Meal').exists())  # Check if meal was added
+
+    def test_delete_meal(self):
+        request = self.factory.post(reverse('MyMealMate:new_meal'), {'name': 'Test Meal'})
+        request.user = self.user
+        response = delete_meal(request)
+        self.assertEqual(response.status_code, 302)  # Check if redirect occurs
+        self.assertFalse(Meal.objects.filter(user=self.user, name='Test Meal').exists())  # Check if meal was added
+
+    def test_add_ingredient(self):
+        user, user_profile = create_user_object()
+        request = self.factory.post('/add_ingredient/', {'name': 'Milk', 'amount': '2', 'unit': 'liters'})
+        request.user = user
+        response = add_ingredient(request)
+        self.assertEqual(response.status_code, 200)
