@@ -58,7 +58,7 @@ def populate():
         if url is not None:
             m.url = url
         if image is not None:
-            m.image.save(image, File(open(f'media/meal_images/{image}', 'rb')))
+            m.image = f'meal_images/{image}'
         if instructions is not None:
             m.instructions = instructions
         m.save()
