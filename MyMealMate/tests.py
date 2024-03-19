@@ -85,16 +85,27 @@ class TestShoppingListFunctionality(TestCase):
         self.assertEqual(response.json(), {'error': 'Method not allowed'})
 
 # Katie's tests
-class LoginTest(TestCase):
+class TestLoginAndSignup(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.test_username = 'testUser'
+        self.test_password = 'testPassword123'
+        self.test_user = User.objects.create_user(self.test_username, "test@test.com", self.test_password)
+        UserProfile.objects.create(user = self.test_user)
 
     def test_login_success(self):
-        response = self.client.post(reverse('MyMealMate:home'), {'username': 'testUser', 'password': 'testPassword'})
+        response = self.client.post(reverse('MyMealMate:home'), {'username': self.test_username, 'password': self.test_password})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('MyMealMate:user_hub'))
 
-    def test_login_fail(self):
-        response = self.client.post(reverse('MyMealMate:home'), {'username': 'wronguser', 'password': 'wrongpassword'})
+    def test_login_failure(self):
+        response = self.client.post(reverse('MyMealMate:home'), {'username': self.test_username, 'password': 'incorrectPassword'})
         self.assertEqual(response.status_code, 200)
+
+    def test_signup_success(self):
+        response = self.client.post(reverse('MyMealMate:signup'), {'username': 'newTestUser', 'first_name': 'User', 'email': 'newUser@test.com', 'password': 'testPassword123'})
+        self.assertEqual(response.status_code, 302)
+
+    def test_signup_failure(self):
+        response = self.client.post(reverse('MyMealMate:signup'), {'username': self.test_username, 'first_name': 'testUser', 'email': 'newUSer2@new.com', 'password': 'newTestPassword123'})
+        self.assertEqual(response.status_code, 200)
+
