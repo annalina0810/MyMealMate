@@ -1,0 +1,73 @@
+.user_hub {
+    display: flex;
+    flex-direction: row;
+}
+
+.upcoming_meals,.shopping_list,.meal_of_the_day {
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 20px;
+    border: 5px outset darkolivegreen;
+    margin: 0 0;
+    border-radius: 10px;
+    background-color: #d4fcd5;
+}
+
+.upcoming_meals,.shopping_list {
+    flex: 1;
+}
+
+.meal_of_the_day {
+    width: 100%;
+    max-height: 30vh;
+    border: 5px outset darkolivegreen;
+}
+
+.meal_deets {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-height: 10vh;
+
+}
+
+h1 {
+    padding: 0;
+    margin-top: 10px;
+}
+
+h2 {
+    padding: 0;
+    margin-top: 5px;
+}
+
+#ingredients, .add_meal_of_the_day {
+    flex:1;
+}
+
+#ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    height: 10vh;
+}
+
+#ingredients {
+    flex:1;
+    margin-right: 100px;
+}
+
+.add_meal_of_the_day {
+    align-self: flex-end;
+}
+
+.add_meal_of_the_day button {
+    float: inline-end;
+    margin: 0;
+}
+
+.thumbnail {
+    aspect-ratio: 1 / 1;
+    max-height: 10vh;
+    border-radius: 5%;
+}
