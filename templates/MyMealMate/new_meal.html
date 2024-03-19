@@ -2,13 +2,17 @@
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
 
+{% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/meal.css' %}">
+{% endblock %}
+
 {% block title_block %}
     New Meal
 {% endblock %}
 
 {% block body_block %}
-<h1>Add a New Meal</h1>
-<div>
+<h1>Make A New Meal</h1>
+<div id="make_meal_container">
     <form id="meal_form" method="post" action="/MyMealMate/my_meals/new_meal/" enctype="multipart/form-data">
         {% csrf_token %}
         {% for hidden in form.hidden_fields %}
@@ -24,7 +28,9 @@
             </div>
         {% endfor %}
 
-        <input type="submit" name="submit" value="Create Meal" />
+        <input type="submit" name="submit" class="button_links" value="Create Meal" />
     </form>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:my_meals' %}';">Back to My Meals</button>
+
 </div>
 {% endblock %}

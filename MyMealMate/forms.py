@@ -48,6 +48,16 @@ class MealForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MealForm, self).__init__(*args, **kwargs)
         self.fields['name'].unique = False
+        self.fields['name'].label = 'Name (required):'
+        self.fields['url'].label = 'Recipe URL:'
+
+    def save(self, commit=True):
+        meal = super().save(commit=False)
+        if not self.cleaned_data.get('image'):
+            meal.image = "default_meal_image.jpg"
+        if commit:
+            meal.save()
+        return meal
 
 class IngredientForm(forms.ModelForm):
     class Meta:
@@ -56,7 +66,7 @@ class IngredientForm(forms.ModelForm):
 
 class ShoppingListForm(forms.ModelForm):
     name = forms.CharField(max_length=30, help_text="Name:")
-    amount = forms.IntegerField(help_text="Amount:", required=False)
+    amount = forms.IntegerField(help_text="Amount:", required=False, min_value=0)
     unit = forms.CharField(max_length=30, help_text="Unit:", required=False)
     checked = forms.BooleanField(widget=forms.HiddenInput(), required=False)
 

@@ -84,7 +84,7 @@ nav a:hover {
 
 }
 
-button {
+.button{
       display: inline-block;
       text-align: center;
       padding: 10px 20px;
@@ -94,4 +94,40 @@ button {
       border: none;
       border-radius: 5px;
       cursor: pointer;
+}
+
+form input{
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px;
+    background-color: #ffffff;
+    color:#555;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+.userDetails, .profilePic{
+    width:50%;
+}
+
+.profilePic, #profilePic{
+    float: right;
+}
+
+.userDetails{
+    float:left;
+}
+
+#profilePic{
+    width: 10%;
+}
+
+.profileButtons{
+    clear: both;
+}
+
+#editProfilePic{
+    width: 15%;
+    padding-left: 5%
 }

@@ -2,25 +2,34 @@
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
 
-
 {% block title_block %}
     Profile
 {% endblock %}
 
 {% block body_block %}
 <h1>My Profile</h1>
+<div>
+    <div class="userDetails">
+        <p>
+            Username: {{ user.username }}<br />
 
-    <p>
-        First name: {{ user.first_name }} <br />
-        Username: {{ user.username }}<br />
-        Email: {{ user.email }} <br />
-        Profile Picture: <br/>
-        <img src="{{ profile_picture.url }}" alt="Profile Picture" />
-    </p>
-    <ul>
-        <li><a href="{% url 'MyMealMate:logout' %}">Logout</a></li>
+            {% if user.first_name %}
+                First name: {{ user.first_name }} <br />
+            {%  endif  %}
 
-        <li><a href="{% url 'MyMealMate:edit_profile' %}">Edit Profile</a></li>
-    </ul>
-    
+            {% if user.email %}
+                Email: {{ user.email }} <br />
+            {% endif %}
+        </p>
+    </div>
+    <div class="profilePic"></div>
+        <img id="profilePic" src="{{ profile_picture.url }}" alt="Profile Picture" />   
+    </div>  
+
+    <div class="profileButtons">
+        <button class="button" onclick="window.location.href = '{% url 'MyMealMate:logout' %}';">Log Out</button>
+
+        <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_profile' %}';">Edit Profile</button>
+    </div>
+     
 {% endblock %}

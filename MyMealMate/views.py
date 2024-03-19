@@ -177,8 +177,10 @@ def my_meals(request):
     context_dict = {'nbar': 'my_meals'}
   
     meals = Meal.objects.filter(user=request.user)
+    recent_meals = Meal.objects.order_by('-id')[:5]
     context_dict["meals"] = meals
     context_dict["username_slug"] = slugify(request.user.username)
+    context_dict["recent_meals"] = recent_meals
 
     response = render(request, 'MyMealMate/my_meals.html', context=context_dict)
     return response
@@ -193,7 +195,7 @@ def new_meal(request):
             meal = form.save(commit=False)
             meal.user = request.user  
             meal.save()
-            return redirect(reverse('MyMealMate:my_meals'))
+            return redirect(reverse('MyMealMate:edit_meal', kwargs={'meal_name_slug': meal.slug}))
     else:
         form = MealForm()
 
@@ -333,25 +335,89 @@ def clear_completed(request):
 
 @login_required
 def edit_shopping_list(request):
-    # ToDo: don't allow unit without amount
     shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
     items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
     form = ShoppingListForm()
+    context_dict = {'nbar': 'shopping_list', "items": items, "form": form}
 
     if request.method == 'POST':
         form = ShoppingListForm(request.POST)
         if form.is_valid():
-            amount = int(form.data["amount"]) if form.data["amount"] != "" else 0
-            item = shopping_list.add_item(form.data['name'], amount, form.data["unit"])
+            # get the item that was edited
+            item = ShoppingListItem.objects.get(id=form.data["item-id"])
+
+            # update values and save item
+            item.name = form.data["name"]
+            item.amount = int(form.data["amount"]) if form.data["amount"] != "" else 1
+            item.unit = form.data["unit"]
+            item.save()
 
             return redirect(reverse('MyMealMate:edit_shopping_list'))
+        else:
+            context_dict["error"] = "Amount can not be negative"
+            return render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     else:
         print(form.errors)
 
-    context_dict = {'nbar': 'shopping_list', "items": items, "form": form}
+    context_dict["items"] = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
 
     response = render(request, 'MyMealMate/edit_shopping_list.html', context = context_dict)
     return response
+
+
+@csrf_exempt
+def add_shopping_list_item(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        amount = int(request.POST.get('amount')) if request.POST.get('amount') != "" else 1
+        if amount < 0:
+            return JsonResponse({"error": "Amount can not be negative"}, status=400)
+        unit = request.POST.get('unit')
+
+        # add the item to the shopping list
+        shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
+        item = shopping_list.add_item(name, amount, unit)
+        item.save()
+        return JsonResponse({'id': item.id})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+def edit_shopping_list_item(request):
+    if request.method == 'GET':
+        item_id = request.GET.get('item_id')
+        try:
+            item = ShoppingListItem.objects.get(id=item_id)
+            data = {
+                'name': item.name,
+                'amount': item.amount,
+                'unit': item.unit
+            }
+            response = JsonResponse(data)
+
+            return response
+        except ShoppingListItem.DoesNotExist:
+            return JsonResponse({'error': 'Item not found'}, status=404)
+
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+def delete_shopping_list_item(request):
+    if request.method == 'POST':
+
+        item_id = request.POST.get('item_id')
+        # Retrieve the item
+        item = get_object_or_404(ShoppingListItem, id=item_id)
+
+        # Delete the item
+        item.delete()
+
+        return JsonResponse({'message': 'Item deleted successfully'})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
 @login_required
