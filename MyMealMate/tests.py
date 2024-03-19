@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.test.client import RequestFactory
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from MyMealMate.models import *
 from MyMealMate.forms import *
@@ -97,3 +98,10 @@ class LoginTest(TestCase):
         response = self.client.post("{% url 'MyMealMate: home}' %}", {'username': 'wronguser', 'password': 'wrongpassword'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.url, "{% url 'MyMealMate: home}' %}")
+
+class MealViewsTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client.login(username='testuser', password='testpassword')
+        self.meal = Meal.objects.create(name='Test Meal', user=self.user)
