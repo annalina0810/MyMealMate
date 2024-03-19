@@ -29,8 +29,9 @@
     {%endif%}
 <br/>
 <div>
+
     <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_shopping_list' %}';">Add Items</button>
-    <button class="button" onclick="clearAll()">New clear All</button>
+    <button class="button" onclick="clearAll()">Clear All</button>
     <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_completed' %}';">Clear completed</button>
 </div>
 {% endblock %}
