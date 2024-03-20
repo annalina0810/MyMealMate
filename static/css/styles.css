@@ -6,6 +6,8 @@
 body {
     margin: 0;
     font-family: 'Atyp', sans-serif;
+    min-width:1180px;
+    background-color: #ace0ab;
 }
 
 nav {
@@ -105,8 +107,8 @@ form input{
     border: 1px solid black;
     border-radius: 5px;
     cursor: pointer;
-
 }
+
 .userDetails, .profilePic{
     width:50%;
 }

@@ -23,6 +23,7 @@ urlpatterns = [
     path('shopping_list/clear_all', views.clear_all, name='clear_all'),
     path('shopping_list/clear_completed/', views.clear_completed, name='clear_completed'),
     path('shopping_list/clicked/<int:item_id>/', views.clicked_item, name='clicked'),
+    path('user_hub/clicked_from_hub/<int:item_id>/', views.clicked_item_from_hub, name='clicked_from_hub'),
     path('shopping_list/edit_shopping_list/', views.edit_shopping_list, name='edit_shopping_list'),
     path('shopping_list/edit_shopping_list/add_item', views.add_shopping_list_item, name='add_item'),
     path('shopping_list/edit_shopping_list/edit_item', views.edit_shopping_list_item, name='edit_item'),
