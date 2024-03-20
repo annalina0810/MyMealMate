@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block stylesheet_block %}
+    <link rel="stylesheet" href="{% static 'css/shopping_list.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 {% block script_block %}
@@ -17,6 +18,7 @@
 
 {% block body_block %}
 <h1>Edit Shopping List</h1>
+<div class="shopping_list">
     {%if items%}
     <form name="edit-form" method="post">
         {% csrf_token %}
@@ -46,13 +48,14 @@
         <input type="text" id="new-item-unit" placeholder="Unit">
         <button class="button" type="button" id="add-item">Add Item</button>
     </form>
-<ul>
-{%for item in items%}
-    {% if item.checked %}
-    <li><s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s></li>
-    {%endif%}
-{%endfor%}
-</ul>
+    <ul>
+    {%for item in items%}
+        {% if item.checked %}
+        <li><s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s></li>
+        {%endif%}
+    {%endfor%}
+    </ul>
+</div>
 <div>
     <button class="button" onclick="window.location.href ='{% url 'MyMealMate:shopping_list' %}';">Done</button>
 </div>
