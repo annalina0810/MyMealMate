@@ -94,18 +94,84 @@ class TestLoginAndSignup(TestCase):
         UserProfile.objects.create(user = self.test_user)
 
     def test_login_success(self):
+        # correct username and password
         response = self.client.post(reverse('MyMealMate:home'), {'username': self.test_username, 'password': self.test_password})
         self.assertEqual(response.status_code, 302)
 
-    def test_login_failure(self):
+    def test_login_wrong_password(self):
+        # incorrect password
         response = self.client.post(reverse('MyMealMate:home'), {'username': self.test_username, 'password': 'incorrectPassword'})
         self.assertEqual(response.status_code, 200)
 
+    def test_login_wrong_username(self):
+        # incorrect username
+        response = self.client.post(reverse('MyMealMate:home'), {'username': 'wrongUsername', 'password': self.test_password})
+        self.assertEqual(response.status_code, 200)
+
     def test_signup_success(self):
+        # create new user
         response = self.client.post(reverse('MyMealMate:signup'), {'username': 'newTestUser', 'first_name': 'User', 'email': 'newUser@test.com', 'password': 'testPassword123'})
         self.assertEqual(response.status_code, 302)
 
-    def test_signup_failure(self):
+    def test_signup_taken_username(self):
+        # username already taken
         response = self.client.post(reverse('MyMealMate:signup'), {'username': self.test_username, 'first_name': 'testUser', 'email': 'newUSer2@new.com', 'password': 'newTestPassword123'})
         self.assertEqual(response.status_code, 200)
+
+    def test_signup_no_details(self):
+        # no details entered
+        response = self.client.post(reverse('MyMealMate:signup'), {})
+        self.assertEqual(response.status_code, 200)
+
+    def test_logout(self):
+        # logout
+        self.client.login(username=self.test_username, password=self.test_password)
+        response = self.client.post(reverse('MyMealMate:logout'), {})
+        self.assertEqual(response.status_code, 302)
+
+
+
+class TestProfile(TestCase):
+    def test_profile_view(self):
+        # test profile view
+        self.client = Client()
+        self.test_username = 'testUser'
+        self.test_password = 'testPassword123'
+        self.test_user = User.objects.create_user(self.test_username, "test@test.com", self.test_password)
+        UserProfile.objects.create(user = self.test_user)
+        self.client.login(username=self.test_username, password=self.test_password)
+
+        response = self.client.get(reverse('MyMealMate:profile')) 
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.test_username)
+        self.assertContains(response, "default_profile.jpg")
+        self.client.logout()
+        response = self.client.get(reverse('MyMealMate:profile'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_edit_view(self):
+        self.client = Client()
+        self.test_username = 'testUser'
+        self.test_password = 'testPassword123'
+        self.test_user = User.objects.create_user(self.test_username, "test@test.com", self.test_password)
+        UserProfile.objects.create(user = self.test_user)
+        self.client.login(username=self.test_username, password=self.test_password)
+        response = self.client.get(reverse('MyMealMate:edit_profile'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, self.test_username)
+        response = self.client.post(reverse('MyMealMate:edit_profile'), {'username': 'updatedUsername', 'first_name': 'updatedName', 'email': 'updatedTest@test.com'})
+        self.assertEqual(response.status_code, 302)
+
+        updated_user = User.objects.get(username='updatedUsername')
+        self.assertEqual(updated_user.first_name, 'updatedName')
+        self.assertEqual(updated_user.email, 'updatedTest@test.com')
+
+        response = self.client.get(reverse('MyMealMate:profile')) 
+        self.assertContains(response, "default_profile.jpg")
+
+        self.client.logout()
+        response = self.client.get(reverse('MyMealMate:edit_profile'))
+        self.assertEqual(response.status_code, 302)
 
