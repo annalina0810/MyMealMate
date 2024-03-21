@@ -66,6 +66,7 @@ h1 {
     max-width: 100px; /* Adjust the maximum width of the image */
     margin-right: 20px; /* Add space between image and text */
     aspect-ratio: 1 / 1;
+    object-fit: cover;
 
 }
 
