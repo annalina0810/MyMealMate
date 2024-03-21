@@ -124,20 +124,6 @@ def user_hub(request):
     # next 7 days 
     user_schedule = Schedule.objects.get_or_create(user=request.user)[0]
 
-    # wrong way to get the next 7 days
-    # today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    # days = Day.objects.filter(schedule=user_schedule, date__gte=today, date__lt=today + timedelta(days=7)).order_by("date")[0:7]
-
-    # upcoming_meals = []
-
-    # for day in days:
-    #     day_name = day.date.strftime("%A")
-    #     meals = [meal.name for meal in day.scheduledMeals.all()]
-    #     upcoming_meals.append((day_name, meals))
-
-    # correct way to get the next 7 days (includes days with no meals scheduled)
-
-    # loop through the next 7 days
     upcoming_meals = []
     for i in range(7):
         day = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=i)
@@ -468,6 +454,7 @@ def delete_shopping_list_item(request):
 @csrf_exempt
 @login_required
 def schedule(request):
+    print(request)
     if request.method == 'POST':
         meal_name = request.POST.get('meal-name')
         meal_date = request.POST.get('meal-date')
@@ -501,8 +488,27 @@ def schedule(request):
                 schedule += meal.name + ','
             schedule += ';'
 
-        context_dict = {'nbar': 'schedule', "schedule": schedule, 'user_meals': user_meals}
+        delete_form = DeleteScheduledMealForm(user=request.user)
+        
+        context_dict = {'nbar': 'schedule', "schedule": schedule, 'user_meals': user_meals, 'form': delete_form}
         return render(request, 'MyMealMate/schedule.html', context=context_dict)
+    
+def delete_scheduled_meal(request):
+    print("Deleting scheduled meal")
+    if request.method == 'POST':
+        # get the meal to delete
+        meal_id = request.POST.get('meal')
+        meal = Meal.objects.get(id=meal_id)
+        user_schedule = Schedule.objects.get(user=request.user)
+        days = Day.objects.filter(schedule=user_schedule)
+        for day in days:
+            if meal in day.scheduledMeals.all():
+                user_schedule.unscheduleMeal(day, meal)
+                break
+        return redirect(reverse('MyMealMate:schedule'))
+    else:
+        form = DeleteScheduledMealForm(user=request.user)
+        return redirect(reverse('MyMealMate:schedule'))
 
 @login_required
 def add_meal_of_the_day(request):
