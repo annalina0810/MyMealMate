@@ -88,8 +88,6 @@ function scheduleMeal(event) {
         requestBody += '&add-ingredients=true'; // include parameter to add ingredients to shopping list
     }
 
-    alert(add_ingredients)
-
     fetch('/MyMealMate/schedule/', {
         method: 'POST',
         headers: {
@@ -99,13 +97,11 @@ function scheduleMeal(event) {
     })
     .then(response => {
         if (response.ok) {
+            location.reload();
             return response.json();
         } else {
             throw new Error('Failed to schedule meal');
         }
-    })
-    .then(data => {
-        location.reload();
     })
     .catch(error => {
         console.error('Error:', error);
