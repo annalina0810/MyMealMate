@@ -6,6 +6,8 @@
 body {
     margin: 0;
     font-family: 'Atyp', sans-serif;
+    min-width:1180px;
+    background-color: #ace0ab;
 }
 
 nav {
@@ -89,7 +91,7 @@ nav a:hover {
       text-align: center;
       padding: 10px 20px;
       margin: 10px;
-      background-color: #3498db;
+      background-color: #548763;
       color: #fff;
       border: none;
       border-radius: 5px;
@@ -105,8 +107,8 @@ form input{
     border: 1px solid black;
     border-radius: 5px;
     cursor: pointer;
-
 }
+
 .userDetails, .profilePic{
     width:50%;
 }
@@ -130,4 +132,26 @@ form input{
 #editProfilePic{
     width: 15%;
     padding-left: 5%
+}
+
+.shopping_list {
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 20px;
+    border: 5px outset darkolivegreen;
+    margin: 0 0;
+    border-radius: 10px;
+    background-color: #d4fcd5;
+}
+
+.delete_button{
+      display: inline-block;
+      text-align: center;
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #d94e4e;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
 }
