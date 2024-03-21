@@ -109,6 +109,8 @@ form input{
     cursor: pointer;
 }
 
+/* Profile page */
+
 .userDetails, .profilePic{
     width:50%;
 }

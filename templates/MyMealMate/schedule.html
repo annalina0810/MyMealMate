@@ -26,37 +26,44 @@
 
 {% block body_block %}
 <h1>Schedule</h1>
-<div class="schedule-navigation">
-    <button id="prevMonthButton" onclick="previousMonth('{{ schedule }}')">Previous</button>
-    <button id="todayButton" onclick="today('{{ schedule }}')">Current Month</button>
-    <button id="nextMonthButton" onclick="nextMonth('{{ schedule }}')">Next</button>
-</div>
-
-<div class="calendar-form-container">
-    <div id="calendar-container">
-        <div id="calendar"></div>
+<div class="schedule_container">
+    <div class="calendar-form-container">
+        <div id="calendar-container">
+            <div id="calendar"></div>
+         </div>
+        <div class="schedule-navigation">
+            <button class="button" id="prevMonthButton" onclick="previousMonth('{{ schedule }}')">Previous</button>
+            <button class="button" id="todayButton" onclick="today('{{ schedule }}')">Current Month</button>
+            <button class="button" id="nextMonthButton" onclick="nextMonth('{{ schedule }}')">Next</button>
+        </div>
     </div>
-    <div class="meal-scheduling-container">
-        <h2>Schedule a Meal</h2>
-        <form id="meal-scheduling-form" method="post" action="{% url 'MyMealMate:schedule' %}">
-            <select name="meal-name">
-                <option value="">Select a meal</option>
-                {% for meal in user_meals %}
-                    <option value="{{ meal.name }}">{{ meal.name }}</option>
-                {% endfor %}
-            </select>
-            <input type="date" name="meal-date" required>
 
-            <input type="checkbox" name="add-ingredients" id="add-ingredients">
-            <label for="add-ingredients">Add all ingredients to shopping list</label>
-            <button type="submit">Schedule Meal</button>
-        </form>
-        <form method="post" action="{% url 'MyMealMate:delete_scheduled_meal' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-        
-            <input type="submit" value="Delete">
-        </form>
+    <div class="meal-scheduling-body">
+        <div class="meal-scheduling-container">
+            <h2>Schedule a Meal</h2>
+            <form id="meal-scheduling-form" method="post" action="{% url 'MyMealMate:schedule' %}">
+                Meal:
+                <select name="meal-name">
+                    <option value="">Select a meal</option>
+                    {% for meal in user_meals %}
+                        <option value="{{ meal.name }}">{{ meal.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="date" name="meal-date" required>
+
+                <label for="add-ingredients">Add all ingredients to shopping list:</label>
+                <input type="checkbox" name="add-ingredients" id="add-ingredients">
+                <button class="button" type="submit">Schedule Meal</button>
+            </form>
+        </div>
+        <div class="delete-meal-form">
+            <h2>Delete a Scheduled Meal</h2>
+            <form method="post" action="{% url 'MyMealMate:delete_scheduled_meal' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="button" type="submit" value="Delete">
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
