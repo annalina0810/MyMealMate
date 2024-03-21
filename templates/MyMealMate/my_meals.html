@@ -15,20 +15,22 @@
 <div class="content">
     <div class="meal-list">
         {% if meals %}
-        <ul>
-            {% for meal in meals %}
-            <li>
-                <div class="meal-info">
-                    {% if meal.image %}
-                        <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
-                    {% endif %}
-                    <div class="meal-details">
-                        <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>
+            <ul>
+                {% for meal in meals %}
+                <li>
+                    <div class="meal-info">
+                        {% if meal.image %}
+                            <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
+                        {% endif %}
+                        <div class="meal-details">
+                            <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>
+                        </div>
                     </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
+                </li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'MyMealMate:schedule' %}" class="button_links">Schedule a Meal</a>
+        
         {% else %}
         <p>You have no meals. Click this button to add some:</p> <br>
         <a href="{% url 'MyMealMate:new_meal' %}" class="button_links">Make a New Meal</a>
