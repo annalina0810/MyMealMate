@@ -422,27 +422,47 @@ def delete_shopping_list_item(request):
 
 @login_required
 def schedule(request):
-    
-    # Get the user's schedule
-    user_schedule = Schedule.objects.get_or_create(user=request.user)[0]
+    if request.method == 'POST':
+        meal_name = request.POST.get('meal-name')
+        meal_date = request.POST.get('meal-date')
 
-    # create a list of days from the schedule
-    days = Day.objects.filter(schedule=user_schedule).order_by("date")
+        print(meal_name)
+        print(meal_date)
+        
+        # Convert meal_date string to a datetime object
+        meal_date = datetime.strptime(meal_date, '%Y-%m-%d').date()
+        
+        # Get or create the user's schedule
+        user_schedule, created = Schedule.objects.get_or_create(user=request.user)
+        
+        # Get or create the day for the meal date
+        day, created = Day.objects.get_or_create(schedule=user_schedule, date=meal_date)
+        
+        # Create the meal
+        meal = Meal.objects.create(user=request.user, name=meal_name)
+        
+        # Schedule the meal
+        user_schedule.scheduleMeal(day, meal)
+        
+        return redirect(reverse('MyMealMate:schedule'))
 
-    # convert to a string
-    schedule = ''
-    for day in days:
-        schedule += str(day.date) + ','
-        for meal in day.scheduledMeals.all():
-            schedule += meal.name + ','
-        schedule += ';'
+    else:
+        # Get the user's schedule
+        user_schedule = Schedule.objects.get_or_create(user=request.user)[0]
 
-    # example schedule string
-    # schedule = '2021-03-01,Spaghetti,2021-03-02,Chicken Curry,2021-03-03,;2021-03-04,;2021-03-05,;'
+        # Create a list of days from the schedule
+        days = Day.objects.filter(schedule=user_schedule).order_by("date")
 
-    context_dict = {'nbar': 'schedule', "schedule": schedule}
-    response = render(request, 'MyMealMate/schedule.html', context = context_dict)
-    return response
+        # Convert to a string
+        schedule = ''
+        for day in days:
+            schedule += str(day.date) + ','
+            for meal in day.scheduledMeals.all():
+                schedule += meal.name + ','
+            schedule += ';'
+
+        context_dict = {'nbar': 'schedule', "schedule": schedule}
+        return render(request, 'MyMealMate/schedule.html', context=context_dict)
 
 @login_required
 def add_meal_of_the_day(request):
