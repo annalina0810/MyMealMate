@@ -8,7 +8,7 @@
 
 {% block body_block %}
 <h1>My Profile</h1>
-<div>
+<div class="contentHolder">
     <div class="userDetails">
         <p>
             Username: {{ user.username }}<br />
@@ -22,7 +22,7 @@
             {% endif %}
         </p>
     </div>
-    <div class="profilePic"></div>
+    <div class="profilePic">
         <img id="profilePic" src="{{ profile_picture.url }}" alt="Profile Picture" />   
     </div>  
 
@@ -31,5 +31,6 @@
 
         <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_profile' %}';">Edit Profile</button>
     </div>
+</div>
      
 {% endblock %}

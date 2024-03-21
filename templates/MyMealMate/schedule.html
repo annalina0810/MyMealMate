@@ -6,71 +6,8 @@
     Schedule
 {% endblock %}
 
-<!-- // logic for date
-// default to creating a schedule for current month
-// if the select previous or next month, use selected_month instead
-// if the today button is clicked, use current month
-
-// create calendar object structure
-// get date
-// get first day of month
-// structure will be days of the week as heading, and then the days of the month
-// so for if the first day of the month is a Wednesday, then the first 2 days of the month will be empty
-// then the days of the month will be filled in, and then the last days of the month will be empty until the end of the week
-
-// code
-
-var selected_month = new Date().getMonth();
-var selected_year = new Date().getFullYear();
-var selected_day = new Date().getDate();
-var selected_date = new Date(selected_year, selected_month, selected_day);
-
-document.addEventListener('DOMContentLoaded', function() {
-    createCalendar(selected_month, selected_year);
-}
-
-function createCalendar(month, year) {
-    var days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    var first_day = new Date(year, month, 1);
-    var last_day = new Date(year, month + 1, 0);
-    var calendar = "<table class='calendar'>";
-    calendar += "<tr><th>" + days_of_week.join("</th><th>") + "</th></tr>";
-    var day = 1;
-    for (var i = 0; i < 6; i++) {
-        calendar += "<tr>";
-        for (var j = 0; j < 7; j++) {
-            if (i == 0 && j < first_day.getDay()) {
-                calendar += "<td></td>";
-            } else if (day > last_day.getDate()) {
-                break;
-            } else {
-                calendar += "<td>" + day + "</td>";
-                day++;
-            }
-        }
-        calendar += "</tr>";
-    }
-    calendar += "</table>";
-    document.getElementById("calendar").innerHTML = calendar;
-}
-
-function previousMonth() {
-    selected_month = selected_month - 1;
-    createCalendar(selected_month, selected_year);
-}
-
-function nextMonth() {
-    selected_month = selected_month + 1;
-    createCalendar(selected_month, selected_year);
-}
-
-function today() {
-    selected_month = new Date().getMonth();
-    createCalendar(selected_month, selected_year);
-} -->
-
 {% block stylesheet_block %}
-<link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}">
 {% endblock %}
 
 {% block script_block %}
@@ -80,23 +17,41 @@ function today() {
     var selected_month = new Date().getMonth();
     var selected_year = new Date().getFullYear();
 
-    document.addEventListener('DOMContentLoaded', function() {
-        createCalendar(selected_month, selected_year);
+    document.addEventListener("DOMContentLoaded", function() {
+        var schedule = '{{ schedule }}';
+        createCalendar(selected_month, selected_year, schedule);
     });
 </script>
 {% endblock %}
 
 {% block body_block %}
-<h1>Schedule</h1>
-<div class="schedule_nav">
-    <ul>
-        <li><button id="prevMonthButton" onclick="previousMonth()">Previous</button></li>
-        <li><button id="todayButton" onclick="today()">Current Month</button></li>
-        <li><button id="nextMonthButton" onclick="nextMonth()">Next</button></li>
-        <!-- test -->
-        <li>
-    </ul>
+<h1>Schedule a Meal</h1>
+<div class="schedule-navigation">
+    <button id="prevMonthButton" onclick="previousMonth('{{ schedule }}')">Previous</button>
+    <button id="todayButton" onclick="today('{{ schedule }}')">Current Month</button>
+    <button id="nextMonthButton" onclick="nextMonth('{{ schedule }}')">Next</button>
 </div>
 
-<div id="calendar"></div>
+<div class="schedule-container">
+    <div class="calendar-container">
+        <div id="calendar"></div>
+    </div>
+    <div class="meal-scheduling-container">
+        <h2>Schedule a Meal</h2>
+        <form id="meal-scheduling-form" method="post" action="{% url 'MyMealMate:schedule' %}">
+            {% csrf_token %}
+            <select name="meal-name">
+                <option value="">Select a meal</option>
+                {% for meal in user_meals %}
+                    <option value="{{ meal.name }}">{{ meal.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" name="meal-date" required>
+
+            <input type="checkbox" name="add-ingredients" id="add-ingredients">
+            <label for="add-ingredients">Add all ingredients to shopping list</label>
+            <button type="submit">Schedule Meal</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
