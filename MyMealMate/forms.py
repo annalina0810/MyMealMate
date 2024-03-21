@@ -2,7 +2,16 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from MyMealMate.models import UserProfile
-from MyMealMate.models import Meal, ShoppingListItem, Ingredient
+from MyMealMate.models import Meal, ShoppingListItem, Ingredient, Schedule, Day
+
+class DeleteScheduledMealForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(DeleteScheduledMealForm, self).__init__(*args, **kwargs)
+        scheduled_meals = Meal.objects.filter(day__schedule__user=user).order_by('day__date')
+        self.fields['meal'].queryset = scheduled_meals
+
+    meal = forms.ModelChoiceField(queryset=Meal.objects.none(), empty_label=None)
+    # date = forms.DateField(widget=forms.SelectDateWidget)x
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())

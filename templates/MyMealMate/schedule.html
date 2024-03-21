@@ -51,6 +51,12 @@
             <label for="add-ingredients">Add all ingredients to shopping list</label>
             <button type="submit">Schedule Meal</button>
         </form>
+        <form method="post" action="{% url 'MyMealMate:delete_scheduled_meal' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+        
+            <input type="submit" value="Delete">
+        </form>
     </div>
 </div>
 {% endblock %}

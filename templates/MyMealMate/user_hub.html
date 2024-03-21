@@ -24,6 +24,15 @@
 <div class="user_hub">
     <div class="upcoming_meals">
         <h1>My Meals this Upcoming Week</h1>
+        <div id="meal_schedule">
+            {% for meal in upcoming_meals %}
+                <div class="meal">
+                    <ul>
+                        <li><strong>{{ meal.0 }}</strong> - {% for meal_name in meal.1 %}{{ meal_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
     </div>
     <div class="shopping_list">
         <h1><a href="{% url 'MyMealMate:shopping_list' %}" class="{% if nbar == 'shopping_list' %}active{% endif %}">My Shopping List</a></h1>
