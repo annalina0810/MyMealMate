@@ -293,6 +293,14 @@ def delete_meal(request, meal_name_slug):
     if request.method == 'POST':
         meal.delete()
 
+        recent_meals = Meal.objects.order_by('-id')[:5]
+        context_dict = {
+            'meals': Meal.objects.filter(user=request.user),
+            'username_slug': slugify(request.user.username),
+            'recent_meals': recent_meals
+        }
+        return render(request, 'MyMealMate/my_meals.html', context=context_dict)
+
     return redirect(reverse('MyMealMate:my_meals'))
 
 @login_required

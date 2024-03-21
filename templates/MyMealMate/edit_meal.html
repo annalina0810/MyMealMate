@@ -13,7 +13,7 @@
 
 {% block body_block %}
     <h1>{{ meal.name }} - Edit</h1>
-    <div id="new_meal_container">
+    <div class="content">
       <div class="meal-list">
       <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
@@ -22,7 +22,7 @@
           <button type="submit" class="delete" formaction="{% url 'MyMealMate:delete_meal' meal.slug %}">Delete Recipe</button>
       </form>
       </div>
-      <div class="sidebar">
+      <div class="sidebar" style="height: 485px; overflow-y: auto;">
       <h3>Ingredients</h3>
       <form name="ingredient" method="post" enctype="multipart/form-data">
           {% csrf_token %}
@@ -152,7 +152,5 @@
           
         </script>
         </div>
-    <!-- Back to My Meals Link -->
-    <a href="{% url 'MyMealMate:my_meals' %}" class="button_links" style="float:right">Back to My Meals</a>
     </div>
 {% endblock %}

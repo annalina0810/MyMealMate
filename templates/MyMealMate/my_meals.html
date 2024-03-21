@@ -30,10 +30,11 @@
             {% endfor %}
         </ul>
         {% else %}
-        <p>No meals</p>
+        <p>You have no meals. Click this button to add some:</p> <br>
+        <a href="{% url 'MyMealMate:new_meal' %}" class="button_links">Make a New Meal</a>
         {% endif %}
     </div>
-    <div class="sidebar">
+    <div class="sidebar" style="min-height: 485px">
         <h2>Recent Meals</h2>
         <ul>
             {% for recent_meal in recent_meals %}
