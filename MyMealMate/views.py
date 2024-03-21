@@ -438,13 +438,44 @@ def delete_shopping_list_item(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-
+    
 @login_required
 def schedule(request):
-    context_dict = {'nbar': 'schedule'}
-    
-    response = render(request, 'MyMealMate/schedule.html', context = context_dict)
-    return response
+    if request.method == 'POST':
+        meal_name = request.POST.get('meal-name')
+        meal_date = request.POST.get('meal-date')
+        selected_meal = Meal.objects.get(name=meal_name)
+
+
+        if 'add-ingredients' in request.POST:
+            print("Adding ingredients to shopping list")
+            shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
+            for ingredient in selected_meal.ingredients.all():
+                shopping_list.add_ingredient(ingredient)
+                print(f"Added {ingredient.name} to shopping list")
+        
+        meal_date = datetime.strptime(meal_date, '%Y-%m-%d').date()
+        user_schedule, created = Schedule.objects.get_or_create(user=request.user)
+        day, created = Day.objects.get_or_create(schedule=user_schedule, date=meal_date)
+        meal = Meal.objects.get(user=request.user, name=meal_name)
+        
+        user_schedule.scheduleMeal(day, meal)
+        
+        return redirect(reverse('MyMealMate:schedule'))
+    else:
+        user_meals = Meal.objects.filter(user=request.user)
+        user_schedule = Schedule.objects.get_or_create(user=request.user)[0]
+        days = Day.objects.filter(schedule=user_schedule).order_by("date")
+
+        schedule = ''
+        for day in days:
+            schedule += str(day.date) + ','
+            for meal in day.scheduledMeals.all():
+                schedule += meal.name + ','
+            schedule += ';'
+
+        context_dict = {'nbar': 'schedule', "schedule": schedule, 'user_meals': user_meals}
+        return render(request, 'MyMealMate/schedule.html', context=context_dict)
 
 @login_required
 def add_meal_of_the_day(request):
