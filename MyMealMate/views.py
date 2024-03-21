@@ -426,8 +426,6 @@ def schedule(request):
         meal_name = request.POST.get('meal-name')
         meal_date = request.POST.get('meal-date')
 
-        print(meal_name)
-        print(meal_date)
         
         # Convert meal_date string to a datetime object
         meal_date = datetime.strptime(meal_date, '%Y-%m-%d').date()

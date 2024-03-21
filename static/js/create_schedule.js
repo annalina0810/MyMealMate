@@ -63,14 +63,11 @@ function scheduleMeal(event) {
     var meal_name = form['meal-name'].value;
     var meal_date = form['meal-date'].value;
 
-    alert('Scheduling meal: ' + meal_name + ' on ' + meal_date);
-
     // Send a POST request to the server to schedule the meal
     fetch('/schedule/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': getCookie('csrftoken'), // Retrieve CSRF token
         },
         body: 'meal-name=' + encodeURIComponent(meal_name) + '&meal-date=' + encodeURIComponent(meal_date),
     })
@@ -90,23 +87,6 @@ function scheduleMeal(event) {
     });
 }
 
-// Function to retrieve CSRF token from cookies
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 // Update the calendar when the page is loaded
 document.addEventListener("DOMContentLoaded", function() {
     var schedule = '{{ schedule }}';
@@ -116,3 +96,4 @@ document.addEventListener("DOMContentLoaded", function() {
     var form = document.getElementById('meal-scheduling-form');
     form.addEventListener('submit', scheduleMeal);
 });
+
