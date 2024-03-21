@@ -35,6 +35,28 @@ body {
     margin-right:5px;
 }
 
+
+.upcoming_meals h1 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.meal {
+    border-bottom: 1px solid black;
+    padding: 10px; 
+    font-size: 1.3em;
+}
+
+.meal ul {
+    margin: 0; 
+    padding: 0; 
+}
+
+.meal li {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
 .meal_of_the_day {
     width: 100%;
     height: 30vh;

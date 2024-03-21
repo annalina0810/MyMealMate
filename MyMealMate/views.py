@@ -119,15 +119,42 @@ def user_hub(request):
     set_meal_cookie(request)
     meal_of_the_day = request.session['meal_of_the_day']
     shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
-    shopping_list_items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
+    shopping_list_items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")\
+    
+    # next 7 days 
+    user_schedule = Schedule.objects.get_or_create(user=request.user)[0]
+
+    # wrong way to get the next 7 days
+    # today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    # days = Day.objects.filter(schedule=user_schedule, date__gte=today, date__lt=today + timedelta(days=7)).order_by("date")[0:7]
+
+    # upcoming_meals = []
+
+    # for day in days:
+    #     day_name = day.date.strftime("%A")
+    #     meals = [meal.name for meal in day.scheduledMeals.all()]
+    #     upcoming_meals.append((day_name, meals))
+
+    # correct way to get the next 7 days (includes days with no meals scheduled)
+
+    # loop through the next 7 days
+    upcoming_meals = []
+    for i in range(7):
+        day = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=i)
+        day_name = day.strftime("%A")
+        meals = [meal.name for meal in Day.objects.get_or_create(schedule=user_schedule, date=day)[0].scheduledMeals.all()]
+        if not meals:
+            meals = ["No meals scheduled"]
+        upcoming_meals.append((day_name, meals))
+
     context_dict = {'nbar': 'user_hub',
                     'user': request.user,
                     'meal_of_the_day': meal_of_the_day,
                     'has_meal_of_the_day': userHasMeal(request,meal_of_the_day['strMeal']),
-                    'shopping_list_items': shopping_list_items}
+                    'shopping_list_items': shopping_list_items,
+                    'upcoming_meals': upcoming_meals}
     response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
-
 
 @login_required
 def profile(request):
