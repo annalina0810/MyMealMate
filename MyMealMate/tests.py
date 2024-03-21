@@ -218,3 +218,29 @@ class MealViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(test_meal.ingredients.filter(id=test_ingredient.id).exists())
+
+class TestScheduling(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='testuser', password='password')
+
+    def test_add_meal_of_the_day(self):
+        request = self.factory.post(reverse('MyMealMate:add_meal_of_the_day'), {'meal': 'Test Meal'})
+        request.user = self.user
+        response = add_meal_of_the_day(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Meal.objects.filter(user=self.user, name='Test Meal', schedCounter__gt=0).exists())
+
+    def test_schedule(self):
+        request = self.factory.get(reverse('MyMealMate:schedule'))
+        request.user = self.user
+        response = schedule(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_scheduled_meal(self):
+        test_meal = Meal.objects.create(user=self.user, name='Test Meal', schedCounter=1)
+        request = self.factory.post(reverse('MyMealMate:delete_scheduled_meal'), {'meal': test_meal.slug})
+        request.user = self.user
+        response = delete_scheduled_meal(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Meal.objects.filter(user=self.user, name='Test Meal', schedCounter__gt=0).exists())
