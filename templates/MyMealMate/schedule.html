@@ -25,15 +25,15 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>Schedule a Meal</h1>
+<h1>Schedule</h1>
 <div class="schedule-navigation">
     <button id="prevMonthButton" onclick="previousMonth('{{ schedule }}')">Previous</button>
     <button id="todayButton" onclick="today('{{ schedule }}')">Current Month</button>
     <button id="nextMonthButton" onclick="nextMonth('{{ schedule }}')">Next</button>
 </div>
 
-<div class="schedule-container">
-    <div class="calendar-container">
+<div class="calendar-form-container">
+    <div id="calendar-container">
         <div id="calendar"></div>
     </div>
     <div class="meal-scheduling-container">
