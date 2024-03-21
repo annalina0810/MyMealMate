@@ -1,0 +1,43 @@
+/* CSS for the calendar */
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.calendar caption {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.calendar th {
+    background-color: #f2f2f2;
+    padding: 10px;
+}
+
+.calendar td {
+    padding: 10px;
+    text-align: center;
+}
+
+/* Style for the current day */
+.calendar td.current-day {
+    background-color: #ffcc00; /* You can change this color */
+}
+
+/* Style for the meal list */
+.calendar td ul {
+    padding: 0;
+    margin: 5px 0;
+}
+
+.calendar td ul li {
+    list-style: none;
+}
+
+/* Apply border to the calendar cells */
+.calendar td {
+    border: 1px solid #ddd;
+}

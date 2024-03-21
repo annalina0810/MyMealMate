@@ -11,11 +11,13 @@
 // then the days of the month will be filled in, and then the last days of the month will be empty until the end of the wee
 
 function createCalendar(month, year, schedule) {
+
+    schedule = parseSchedule(schedule);
+
     var days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     var first_day = new Date(year, month, 1);
     var last_day = new Date(year, month + 1, 0);
     var calendar = "<table class='calendar'>";
-    // alert("month: " + month + " year: " + year);
     calendar += "<caption>" + first_day.toLocaleString('default', { month: 'long' }) + " " + year + "</caption>";
     calendar += "<tr><th>" + days_of_week.join("</th><th>") + "</th></tr>";
     var day = 1;
@@ -27,7 +29,17 @@ function createCalendar(month, year, schedule) {
             } else if (day > last_day.getDate()) {
                 break;
             } else {
-                calendar += "<td><div id='scheduleDate'>" + day + "</div></td>";
+                var date = year + "-" + (month + 1).toString().padStart(2, '0') + "-" + day.toString().padStart(2, '0');
+                var meals = schedule[date];
+                var meal_list = "";
+                if (meals) {
+                    meal_list = "<ul>";
+                    meals.forEach(meal => {
+                        meal_list += "<li>" + meal + "</li>";
+                    });
+                    meal_list += "</ul>";
+                }
+                calendar += "<td>" + day + "<br>" + meal_list + "</td>";
                 day++;
             }
         }
@@ -37,27 +49,41 @@ function createCalendar(month, year, schedule) {
     document.getElementById("calendar").innerHTML = calendar;
 }
 
-function previousMonth() {
+function parseSchedule(schedule) {
+    var schedule_obj = {};
+    var schedule_list = schedule.split(';');
+    schedule_list.pop();
+    schedule_list.forEach(day => {
+        var day_list = day.split(',');
+        var date = day_list.shift();
+        schedule_obj[date] = day_list;
+    });
+
+    return schedule_obj;
+}
+
+
+function previousMonth(schedule) {
     selected_month -= 1;
     if (selected_month < 0) {
         selected_month = 11;
         selected_year -= 1;
     }
-    createCalendar(selected_month, selected_year);
+    createCalendar(selected_month, selected_year, schedule);
 }
 
-function nextMonth() {
+function nextMonth(schedule) {
     selected_month += 1;
     if (selected_month > 11) {
         selected_month = 0;
         selected_year += 1;
     }
-    createCalendar(selected_month, selected_year);
+    createCalendar(selected_month, selected_year, schedule);
 }
 
-function today() {
+function today(schedule) {
     selected_month = new Date().getMonth();
-    createCalendar(selected_month, selected_year);
+    createCalendar(selected_month, selected_year, schedule);
 }
 
 

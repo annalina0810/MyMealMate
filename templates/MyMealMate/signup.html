@@ -16,6 +16,7 @@
         </ul>
     </div>
     
+    <div class="login_signup_form">
     <form id="user_form" method="post" action="{% url 'MyMealMate:signup' %}" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -26,4 +27,5 @@
     </form>
     <br/>
 
+    </div>
 {% endblock %}

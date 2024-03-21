@@ -422,8 +422,25 @@ def delete_shopping_list_item(request):
 
 @login_required
 def schedule(request):
-    context_dict = {'nbar': 'schedule'}
     
+    # Get the user's schedule
+    user_schedule = Schedule.objects.get_or_create(user=request.user)[0]
+
+    # create a list of days from the schedule
+    days = Day.objects.filter(schedule=user_schedule).order_by("date")
+
+    # convert to a string
+    schedule = ''
+    for day in days:
+        schedule += str(day.date) + ','
+        for meal in day.scheduledMeals.all():
+            schedule += meal.name + ','
+        schedule += ';'
+
+    # example schedule string
+    # schedule = '2021-03-01,Spaghetti,2021-03-02,Chicken Curry,2021-03-03,;2021-03-04,;2021-03-05,;'
+
+    context_dict = {'nbar': 'schedule', "schedule": schedule}
     response = render(request, 'MyMealMate/schedule.html', context = context_dict)
     return response
 
