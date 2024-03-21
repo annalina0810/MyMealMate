@@ -438,7 +438,7 @@ def delete_shopping_list_item(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-    
+@csrf_exempt
 @login_required
 def schedule(request):
     if request.method == 'POST':

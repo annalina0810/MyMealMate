@@ -39,7 +39,6 @@
     <div class="meal-scheduling-container">
         <h2>Schedule a Meal</h2>
         <form id="meal-scheduling-form" method="post" action="{% url 'MyMealMate:schedule' %}">
-            {% csrf_token %}
             <select name="meal-name">
                 <option value="">Select a meal</option>
                 {% for meal in user_meals %}
