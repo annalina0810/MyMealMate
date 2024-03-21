@@ -65,10 +65,13 @@ h1 {
 .meal-info img {
     max-width: 100px; /* Adjust the maximum width of the image */
     margin-right: 20px; /* Add space between image and text */
+    aspect-ratio: 1 / 1;
+
 }
 
 .meal-details {
     flex: 1; /* Allow the details to take up remaining space */
+    font-size: 20px;
 }
 
 /* Sidebar */
