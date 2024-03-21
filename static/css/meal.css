@@ -1,18 +1,12 @@
 #new_meal_container {
-    padding: 20px;
-    border: 1px solid #000000;
     width: 100%;
     position: relative;
-    display: inline-block;
     min-height: 280px;
 }
 
 #make_meal_container {
-    padding: 20px;
-    border: 1px solid #000000;
     width: 100%;
     position: relative;
-    display: inline-block;
 }
 
 #meal_form {
@@ -32,16 +26,27 @@ h1 {
     text-align: center;
 }
 
-.content {
+/* Clearfix to contain floated elements */
+.content::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.meal-list, .sidebar, #make_meal_container, #new_meal_container {
+    box-sizing: border-box;
     display: inline-block;
+    padding: 20px;
+    border: 5px outset darkolivegreen;
+    margin: 0 0;
+    border-radius: 10px;
+    background-color: #d4fcd5;
+    flex: 1;
 }
 
 .meal-list {
-    padding: 20px;
-    border: 1px solid #000000;
     width: 70%;
     float: left;
-    box-sizing: border-box;
     margin-right: 5px;
     margin-bottom: 15px;
     overflow-y: scroll; 
@@ -70,10 +75,9 @@ h1 {
 /* Sidebar */
 .sidebar {
     padding: 30px;
-    border: 1px solid #000000;
     float: right;
     width: 25%; 
-    box-sizing: border-box;
+    min-height: 400px;
 }
 
 /* Styling for recent meals in the sidebar */
