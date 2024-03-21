@@ -13,12 +13,9 @@
 {% block script_block %}
 <script src="{% static 'js/create_schedule.js' %}"></script>
 <script>
-
-
     var selected_day = new Date().getDate();
     var selected_month = new Date().getMonth();
     var selected_year = new Date().getFullYear();
-
 
     document.addEventListener("DOMContentLoaded", function() {
         var schedule = '{{ schedule }}';
@@ -28,28 +25,32 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>Schedule</h1>
-<div class="schedule_nav">
-    <ul>
-        <li><button id="prevMonthButton" onclick="previousMonth('{{ schedule }}')">Previous</button></li>
-        <li><button id="todayButton" onclick="today('{{ schedule }}')">Current Month</button></li>
-        <li><button id="nextMonthButton" onclick="nextMonth('{{ schedule }}')">Next</button></li>
-    </ul>
+<h1>Schedule a Meal</h1>
+<div class="schedule-navigation">
+    <button id="prevMonthButton" onclick="previousMonth('{{ schedule }}')">Previous</button>
+    <button id="todayButton" onclick="today('{{ schedule }}')">Current Month</button>
+    <button id="nextMonthButton" onclick="nextMonth('{{ schedule }}')">Next</button>
 </div>
 
-<div id="calendar"></div>
+<div class="schedule-container">
+    <div class="calendar-container">
+        <div id="calendar"></div>
+    </div>
+    <div class="meal-scheduling-container">
+        <h2>Schedule a Meal</h2>
+        <form id="meal-scheduling-form" method="post" action="{% url 'MyMealMate:schedule' %}">
+            {% csrf_token %}
+            <select name="meal-name">
+                <option value="">Select a meal</option>
+                {% for meal in user_meals %}
+                    <option value="{{ meal.name }}">{{ meal.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" name="meal-date" required>
 
-<div id="meal-scheduling-section">
-    <h2>Schedule a Meal</h2>
-    <form id="meal-scheduling-form" method="post" action="{% url 'MyMealMate:schedule' %}">
-        {% csrf_token %}
-        <label for="meal-name">Meal Name:</label>
-        <input type="text" id="meal-name" name="meal-name" required><br><br>
-        
-        <label for="meal-date">Meal Date:</label>
-        <input type="date" id="meal-date" name="meal-date" required><br><br>
-        
-        <button type="submit">Schedule</button>
-    </form>
+
+            <button type="submit">Schedule Meal</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

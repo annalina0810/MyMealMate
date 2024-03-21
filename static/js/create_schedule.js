@@ -1,8 +1,6 @@
-// Global variables to keep track of selected month and year
 var selected_month = new Date().getMonth();
 var selected_year = new Date().getFullYear();
 
-// Function to create the calendar
 function createCalendar(month, year, schedule) {
     schedule = parseSchedule(schedule);
     var days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -40,7 +38,6 @@ function createCalendar(month, year, schedule) {
     document.getElementById("calendar").innerHTML = calendar;
 }
 
-// Function to parse the schedule string into an object
 function parseSchedule(schedule) {
     var schedule_obj = {};
     var schedule_list = schedule.split(';');
@@ -54,22 +51,51 @@ function parseSchedule(schedule) {
     return schedule_obj;
 }
 
-// Function to handle form submission for meal scheduling
-function scheduleMeal(event) {
-    event.preventDefault(); // Prevent the default form submission
+function previousMonth(schedule) {
+    selected_month -= 1;
+    if (selected_month < 0) {
+        selected_month = 11;
+        selected_year -= 1;
+    }
+    createCalendar(selected_month, selected_year, schedule);
+}
 
-    // Get form data
+function nextMonth(schedule) {
+    selected_month += 1;
+    if (selected_month > 11) {
+        selected_month = 0;
+        selected_year += 1;
+    }
+    createCalendar(selected_month, selected_year, schedule);
+}
+
+function today(schedule) {
+    selected_month = new Date().getMonth();
+    selected_year = new Date().getFullYear();
+    createCalendar(selected_month, selected_year, schedule);
+}
+
+function scheduleMeal(event) {
+    event.preventDefault();
     var form = event.target;
     var meal_name = form['meal-name'].value;
     var meal_date = form['meal-date'].value;
+    var add_ingredients = form['add-ingredients'].checked; // check if the checkbox is checked
 
-    // Send a POST request to the server to schedule the meal
-    fetch('/schedule/', {
+    var requestBody = 'meal-name=' + encodeURIComponent(meal_name) + '&meal-date=' + encodeURIComponent(meal_date);
+    
+    if (add_ingredients) {
+        requestBody += '&add-ingredients=true'; // include parameter to add ingredients to shopping list
+    }
+
+    alert(add_ingredients)
+
+    fetch('/MyMealMate/schedule/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: 'meal-name=' + encodeURIComponent(meal_name) + '&meal-date=' + encodeURIComponent(meal_date),
+        body: requestBody,
     })
     .then(response => {
         if (response.ok) {
@@ -79,7 +105,6 @@ function scheduleMeal(event) {
         }
     })
     .then(data => {
-        // Reload the page to update the calendar with the scheduled meal
         location.reload();
     })
     .catch(error => {
@@ -87,13 +112,10 @@ function scheduleMeal(event) {
     });
 }
 
-// Update the calendar when the page is loaded
 document.addEventListener("DOMContentLoaded", function() {
     var schedule = '{{ schedule }}';
     createCalendar(selected_month, selected_year, schedule);
     
-    // Add event listener for form submission
     var form = document.getElementById('meal-scheduling-form');
     form.addEventListener('submit', scheduleMeal);
 });
-

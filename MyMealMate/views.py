@@ -419,39 +419,35 @@ def delete_shopping_list_item(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-
+    
 @login_required
 def schedule(request):
     if request.method == 'POST':
         meal_name = request.POST.get('meal-name')
         meal_date = request.POST.get('meal-date')
+        selected_meal = Meal.objects.get(name=meal_name)
 
+
+        if 'add-ingredients' in request.POST:
+            print("Adding ingredients to shopping list")
+            shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
+            for ingredient in selected_meal.ingredients.all():
+                shopping_list.add_ingredient(ingredient)
+                print(f"Added {ingredient.name} to shopping list")
         
-        # Convert meal_date string to a datetime object
         meal_date = datetime.strptime(meal_date, '%Y-%m-%d').date()
-        
-        # Get or create the user's schedule
         user_schedule, created = Schedule.objects.get_or_create(user=request.user)
-        
-        # Get or create the day for the meal date
         day, created = Day.objects.get_or_create(schedule=user_schedule, date=meal_date)
+        meal = Meal.objects.get(user=request.user, name=meal_name)
         
-        # Create the meal
-        meal = Meal.objects.create(user=request.user, name=meal_name)
-        
-        # Schedule the meal
         user_schedule.scheduleMeal(day, meal)
         
         return redirect(reverse('MyMealMate:schedule'))
-
     else:
-        # Get the user's schedule
+        user_meals = Meal.objects.filter(user=request.user)
         user_schedule = Schedule.objects.get_or_create(user=request.user)[0]
-
-        # Create a list of days from the schedule
         days = Day.objects.filter(schedule=user_schedule).order_by("date")
 
-        # Convert to a string
         schedule = ''
         for day in days:
             schedule += str(day.date) + ','
@@ -459,7 +455,7 @@ def schedule(request):
                 schedule += meal.name + ','
             schedule += ';'
 
-        context_dict = {'nbar': 'schedule', "schedule": schedule}
+        context_dict = {'nbar': 'schedule', "schedule": schedule, 'user_meals': user_meals}
         return render(request, 'MyMealMate/schedule.html', context=context_dict)
 
 @login_required
