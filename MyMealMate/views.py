@@ -118,10 +118,13 @@ def delete_account(request):
 def user_hub(request):
     set_meal_cookie(request)
     meal_of_the_day = request.session['meal_of_the_day']
+    shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
+    shopping_list_items = ShoppingListItem.objects.filter(shoppingList=shopping_list).order_by("checked")
     context_dict = {'nbar': 'user_hub',
                     'user': request.user,
                     'meal_of_the_day': meal_of_the_day,
-                    'has_meal_of_the_day': userHasMeal(request,meal_of_the_day['strMeal'])}
+                    'has_meal_of_the_day': userHasMeal(request,meal_of_the_day['strMeal']),
+                    'shopping_list_items': shopping_list_items}
     response = render(request, 'MyMealMate/user_hub.html', context = context_dict)
     return response
 
@@ -293,6 +296,14 @@ def delete_meal(request, meal_name_slug):
     if request.method == 'POST':
         meal.delete()
 
+        recent_meals = Meal.objects.order_by('-id')[:5]
+        context_dict = {
+            'meals': Meal.objects.filter(user=request.user),
+            'username_slug': slugify(request.user.username),
+            'recent_meals': recent_meals
+        }
+        return render(request, 'MyMealMate/my_meals.html', context=context_dict)
+
     return redirect(reverse('MyMealMate:my_meals'))
 
 @login_required
@@ -304,18 +315,26 @@ def shopping_list(request):
     response = render(request, 'MyMealMate/shopping_list.html', context = context_dict)
     return response
 
-
 @login_required
 def clicked_item(request, item_id):
-    item = ShoppingListItem.objects.get(id=item_id)
+    if check_item(request,item_id):
+        return redirect(reverse('MyMealMate:shopping_list'))
+    return render(request, 'MyMealMate/shopping_list.html')
 
+@login_required
+def clicked_item_from_hub(request, item_id):
+    if check_item(request,item_id):
+        return redirect(reverse('MyMealMate:user_hub'))
+    return render(request, 'MyMealMate/user_hub.html')
+
+@login_required
+def check_item(request, item_id):
+    item = ShoppingListItem.objects.get(id=item_id)
     if request.method == 'POST':
         item.checked = not item.checked
         item.save()
-        return redirect(reverse('MyMealMate:shopping_list'))
-
-    return render(request, 'MyMealMate/shopping_list.html')
-
+        return True
+    return False
 
 @login_required
 def clear_all(request):

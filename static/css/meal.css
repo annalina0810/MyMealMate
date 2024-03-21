@@ -1,7 +1,7 @@
 #new_meal_container {
     width: 100%;
     position: relative;
-    min-height: 280px;
+    min-height: 350px;
 }
 
 #make_meal_container {
@@ -45,12 +45,11 @@ h1 {
 }
 
 .meal-list {
-    width: 70%;
+    width: 60%;
     float: left;
     margin-right: 5px;
     margin-bottom: 15px;
-    overflow-y: scroll; 
-    height:400px;
+    min-height: 485px;
 }
 
 .meal-list ul {
@@ -76,8 +75,7 @@ h1 {
 .sidebar {
     padding: 30px;
     float: right;
-    width: 25%; 
-    min-height: 400px;
+    width: 35%; 
 }
 
 /* Styling for recent meals in the sidebar */
