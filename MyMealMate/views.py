@@ -459,15 +459,8 @@ def schedule(request):
         meal_name = request.POST.get('meal-name')
         meal_date = request.POST.get('meal-date')
         selected_meal = Meal.objects.get(name=meal_name)
-
-
         if 'add-ingredients' in request.POST:
-            print("Adding ingredients to shopping list")
-            shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
-            for ingredient in selected_meal.ingredients.all():
-                shopping_list.add_ingredient(ingredient)
-                print(f"Added {ingredient.name} to shopping list")
-        
+            add_ingredients_to_shopping_list(request,selected_meal)
         meal_date = datetime.strptime(meal_date, '%Y-%m-%d').date()
         user_schedule, created = Schedule.objects.get_or_create(user=request.user)
         day, created = Day.objects.get_or_create(schedule=user_schedule, date=meal_date)
@@ -492,6 +485,19 @@ def schedule(request):
         
         context_dict = {'nbar': 'schedule', "schedule": schedule, 'user_meals': user_meals, 'form': delete_form}
         return render(request, 'MyMealMate/schedule.html', context=context_dict)
+
+def add_ingredients_to_shopping_list(request,meal):
+    print("Adding ingredients to shopping list")
+    shopping_list = ShoppingList.objects.get_or_create(user=request.user)[0]
+    for ingredient in meal.ingredients.all():
+        shopping_list.add_ingredient(ingredient)
+        print(f"Added {ingredient.name} to shopping list")
+    shopping_list.save()
+
+def add_meal_to_shopping_list(request,meal_name_slug):
+    meal = get_object_or_404(Meal, slug=meal_name_slug, user=request.user)
+    add_ingredients_to_shopping_list(request,meal)
+    return redirect(reverse('MyMealMate:meal', kwargs={'meal_name_slug': meal.slug}))
     
 def delete_scheduled_meal(request):
     print("Deleting scheduled meal")

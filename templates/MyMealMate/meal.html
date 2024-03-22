@@ -36,6 +36,7 @@
     <br>
     <div id="links">
         <a href="{% url 'MyMealMate:edit_meal' meal.slug %}" class="button_links">Edit Meal</a>
+        <a href="{% url 'MyMealMate:add_meal_to_shopping_list' meal.slug %}" class="button">Add to Shopping List</a>
         {% if meal.url %}
             <a href="{{ meal.url }}" class="button_links">Link to Recipe</a>
         {% endif %}
