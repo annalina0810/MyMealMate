@@ -14,7 +14,7 @@ class UserProfile(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=30)
-    amount = models.IntegerField(blank=True, null=True)
+    amount = models.FloatField(blank=True, null=True)
     unit = models.CharField(max_length=30)
 
     def __str__(self):
@@ -75,7 +75,7 @@ class ShoppingList(models.Model):
 class ShoppingListItem(models.Model):
     shoppingList = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
-    amount = models.IntegerField(blank=True, null=True)
+    amount = models.FloatField(blank=True, null=True)
     unit = models.CharField(max_length=30, blank=True)
     checked = models.BooleanField(default=False)
 

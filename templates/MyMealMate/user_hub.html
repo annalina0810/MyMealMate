@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
+{%load MyMealMate_template_tags%}
 
 {% block title_block %}
     User Hub
@@ -15,15 +16,18 @@
 {% endblock %}
 
 {% block body_block %}
-<!-- {% if user.first_name %}
-    <h1>{{ user.first_name }}'s Hub</h1>
-{% else %}
-    <h1>User Hub</h1>
-{% endif %} -->
+
+<div class="title">
+    {% if user.first_name %}
+        <h1>{{ user.first_name }}'s Hub</h1>
+    {% else %}
+        <h1>User Hub</h1>
+    {% endif %}
+</div>
 
 <div class="user_hub">
     <div class="upcoming_meals">
-        <h1>My Meals this Upcoming Week</h1>
+        <h1><a href="{% url 'MyMealMate:schedule' %}">Upcoming Meals</a></h1>
         <div id="meal_schedule">
             {% for meal in upcoming_meals %}
                 <div class="meal">
@@ -43,9 +47,9 @@
                     {% csrf_token %}
                     <label><input type="checkbox" value="{{shopping_list_item.id}}" onchange="this.form.submit()"  {%if shopping_list_item.checked%} checked {%endif%} />
                         {% if shopping_list_item.checked %}
-                        <s>{{shopping_list_item.name}}{%if shopping_list_item.amount%}: {{shopping_list_item.amount}} {%if shopping_list_item.unit%} {{shopping_list_item.unit}} {%endif%} {%endif%}</s>
+                        <s>{{shopping_list_item.name}}{%if shopping_list_item.amount%}: {{shopping_list_item.amount|remove_decimal_if_integer}} {%if shopping_list_item.unit%} {{shopping_list_item.unit}} {%endif%} {%endif%}</s>
                         {%else%}
-                        {{shopping_list_item.name}}{%if shopping_list_item.amount%}: {{shopping_list_item.amount}} {%if shopping_list_item.unit%} {{shopping_list_item.unit}} {%endif%} {%endif%}
+                        {{shopping_list_item.name}}{%if shopping_list_item.amount%}: {{shopping_list_item.amount|remove_decimal_if_integer}} {%if shopping_list_item.unit%} {{shopping_list_item.unit}} {%endif%} {%endif%}
                         {%endif%}</label> <br/>
                 </form>
             {%endfor%}

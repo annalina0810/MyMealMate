@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
+{%load MyMealMate_template_tags%}
 
 {% block stylesheet_block %}
     <link rel="stylesheet" href="{% static 'css/meal.css' %}">
@@ -26,7 +27,7 @@
     {% if meal.ingredients.all %}
     <ul>
         {% for ingredient in meal.ingredients.all %}
-            <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}</li>
+            <li>{{ ingredient.name }} - {{ ingredient.amount|remove_decimal_if_integer }} {{ ingredient.unit }}</li>
         {% endfor %}
     </ul>
     {% else %}

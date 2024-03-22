@@ -1,14 +1,15 @@
-* {
-    box-sizing: border-box;
-}
-
 body {
     max-height: 100vh;
     overflow: hidden;
 }
 
+.title {
+    text-align: center;
+}
+
 .user_hub,.meal_of_the_day,.flex_meal_content,#ingredients {
     display: flex;
+    box-sizing: border-box;
 }
 
 .user_hub {
@@ -23,6 +24,7 @@ body {
     margin: 0 0;
     border-radius: 10px;
     background-color: #d4fcd5;
+    box-sizing: border-box;
 }
 
 .upcoming_meals,.shopping_list {
@@ -43,12 +45,18 @@ body {
 
 .upcoming_meals {
     margin-right:5px;
+    display: flex;
+    flex-direction: column;
 }
 
 
 .upcoming_meals h1 {
-    font-size: 1.5em;
     margin-bottom: 20px;
+}
+
+#meal_schedule {
+    overflow-y: auto;
+    flex:1;
 }
 
 .meal {
