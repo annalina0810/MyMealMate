@@ -170,31 +170,10 @@ form input{
     border-radius: 10px;
     background-color: #d4fcd5;
     width: 100%;
-    height: 476px;
-    overflow-y: scroll;
     font-size:18px;
 }
 
-.delete_button{
-      display: inline-block;
-      text-align: center;
-      padding: 10px 20px;
-      margin: 10px;
-      background-color: #d94e4e;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-}
-
-.delete_button{
-      display: inline-block;
-      text-align: center;
-      padding: 10px 20px;
-      margin: 10px;
-      background-color: #d94e4e;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+.shopping_list {
+    overflow-y: auto;
+    height: 90%;
 }
