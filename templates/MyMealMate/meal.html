@@ -34,10 +34,15 @@
         No ingredients
     {% endif %}
     <br>
+    
     <div id="links">
         <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_meal' meal.slug %}';">Edit Meal</button>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <button class="button" type="submit" formaction="{% url 'MyMealMate:delete_meal' meal.slug %}">Delete Recipe</button>
+        </form>
         {% if meal.url %}
-            <button class="button" onclick="window.location.href = '{{ meal.url }}'">Link to Recipe</button>
+        <button class="button" onclick="window.location.href = '{{ meal.url }}'">Link to Recipe</button>
         {% endif %}
         <button class="button" onclick="window.location.href = '{% url 'MyMealMate:my_meals' %}';">Back to My Meals</button>
     </div>

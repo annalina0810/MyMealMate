@@ -54,6 +54,7 @@ h1 {
     flex: 2;
     margin-right: 5px;
     margin-bottom: 15px;
+    height: 547px;
 }
 .sidebar{
     height: 547px;
@@ -119,6 +120,8 @@ h1 {
 }
 
 #links {
+    display:flex;
+    justify-content: space-between;
     position: absolute;
     bottom: 0;
     right: 0;

@@ -32,16 +32,21 @@
             <button class="button" onclick="window.location.href = '{% url 'MyMealMate:new_meal' %}';">Make a New Meal</button>
             <button class="button" onclick="window.location.href = '{% url 'MyMealMate:schedule' %}';">My Schedule</button>
         {% else %}
-            <p>You have no meals. Click this button to add some:</p> <br>
+            <p>You have no meals. Click the button below to add one!</p>
             <button class="button" onclick="window.location.href = '{% url 'MyMealMate:new_meal' %}';">Make a New Meal</button>
         {% endif %}
     </div>
     <div class="sidebar" style="min-height: 485px">
         <h2>Recent Meals</h2>
         <ul>
+        {% if recent_meals %}
             {% for recent_meal in recent_meals %}
                 <li><a href="{% url 'MyMealMate:meal' recent_meal.slug %}">{{ recent_meal.name }}</a></li>
             {% endfor %}
+        {% else %}
+            <p>You have no meals. Click the button below to add one!</p> 
+            <button class="button" onclick="window.location.href = '{% url 'MyMealMate:new_meal' %}';">Make a New Meal</button>
+        {% endif %}
         </ul>
     </div>
 </div>
