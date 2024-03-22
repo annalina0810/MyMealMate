@@ -19,6 +19,7 @@ urlpatterns = [
     path('mymeals/<slug:meal_name_slug>/edit_ingredient/', views.edit_ingredient, name='edit_ingredient'),
     path('user_hub/add_meal_of_the_day/', views.add_meal_of_the_day, name='add_meal_of_the_day'),
     path('schedule/', views.schedule, name='schedule'),
+    path('delete_scheduled_meal/', views.delete_scheduled_meal, name='delete_scheduled_meal'),
     path('shopping_list/', views.shopping_list, name='shopping_list'),
     path('shopping_list/clear_all', views.clear_all, name='clear_all'),
     path('shopping_list/clear_completed/', views.clear_completed, name='clear_completed'),

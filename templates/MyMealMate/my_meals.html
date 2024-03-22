@@ -20,7 +20,7 @@
                 <li>
                     <div class="meal-info">
                         {% if meal.image %}
-                            <img src="{{ meal.image.url }}" alt="{{ meal.name }} Image">
+                            <a href="{% url 'MyMealMate:meal' meal.slug %}"><img src="{{ meal.image.url }}" alt="{{ meal.name }} Image"></a>
                         {% endif %}
                         <div class="meal-details">
                             <a href="{% url 'MyMealMate:meal' meal.slug %}">{{ meal.name }}</a>

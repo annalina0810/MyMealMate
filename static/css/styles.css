@@ -109,6 +109,8 @@ form input{
     cursor: pointer;
 }
 
+/* Profile page */
+
 .userDetails, .profilePic{
     width:50%;
 }
@@ -122,16 +124,53 @@ form input{
 }
 
 #profilePic{
-    width: 10%;
+    width: 20%;   
 }
 
 .profileButtons{
     clear: both;
 }
 
+.contentHolder{
+    width: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 20px;
+    margin: 0 0;
+    background-color: #d4fcd5;
+}
+
+.contentHolder, #profilePic, #editProfilePic{
+    border: 5px outset darkolivegreen;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
 #editProfilePic{
-    width: 15%;
-    padding-left: 5%
+    margin-left: 15%;
+    width: 20%;
+}
+
+.shopping_list {
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 20px;
+    border: 5px outset darkolivegreen;
+    margin: 0 0;
+    border-radius: 10px;
+    background-color: #d4fcd5;
+}
+
+.delete_button{
+      display: inline-block;
+      text-align: center;
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #d94e4e;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
 }
 
 .shopping_list {

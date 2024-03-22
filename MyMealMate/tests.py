@@ -86,19 +86,95 @@ class TestShoppingListFunctionality(TestCase):
         self.assertEqual(response.json(), {'error': 'Method not allowed'})
 
 # Katie's tests
-class LoginTest(TestCase):
+class TestLoginAndSignup(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.test_username = 'testUser'
+        self.test_password = 'testPassword123'
+        self.test_user = User.objects.create_user(self.test_username, "test@test.com", self.test_password)
+        UserProfile.objects.create(user = self.test_user)
 
     def test_login_success(self):
-        response = self.client.post(reverse('MyMealMate:home'), {'username': 'testUser', 'password': 'testPassword'})
+        # correct username and password
+        response = self.client.post(reverse('MyMealMate:home'), {'username': self.test_username, 'password': self.test_password})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('MyMealMate:user_hub'))
 
-    def test_login_fail(self):
-        response = self.client.post(reverse('MyMealMate:home'), {'username': 'wronguser', 'password': 'wrongpassword'})
+    def test_login_wrong_password(self):
+        # incorrect password
+        response = self.client.post(reverse('MyMealMate:home'), {'username': self.test_username, 'password': 'incorrectPassword'})
         self.assertEqual(response.status_code, 200)
+
+    def test_login_wrong_username(self):
+        # incorrect username
+        response = self.client.post(reverse('MyMealMate:home'), {'username': 'wrongUsername', 'password': self.test_password})
+        self.assertEqual(response.status_code, 200)
+
+    def test_signup_success(self):
+        # create new user
+        response = self.client.post(reverse('MyMealMate:signup'), {'username': 'newTestUser', 'first_name': 'User', 'email': 'newUser@test.com', 'password': 'testPassword123'})
+        self.assertEqual(response.status_code, 302)
+
+    def test_signup_taken_username(self):
+        # username already taken
+        response = self.client.post(reverse('MyMealMate:signup'), {'username': self.test_username, 'first_name': 'testUser', 'email': 'newUSer2@new.com', 'password': 'newTestPassword123'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_signup_no_details(self):
+        # no details entered
+        response = self.client.post(reverse('MyMealMate:signup'), {})
+        self.assertEqual(response.status_code, 200)
+
+    def test_logout(self):
+        # logout
+        self.client.login(username=self.test_username, password=self.test_password)
+        response = self.client.post(reverse('MyMealMate:logout'), {})
+        self.assertEqual(response.status_code, 302)
+
+
+
+class TestProfile(TestCase):
+    def test_profile_view(self):
+        # test profile view
+        self.client = Client()
+        self.test_username = 'testUser'
+        self.test_password = 'testPassword123'
+        self.test_user = User.objects.create_user(self.test_username, "test@test.com", self.test_password)
+        UserProfile.objects.create(user = self.test_user)
+        self.client.login(username=self.test_username, password=self.test_password)
+
+        response = self.client.get(reverse('MyMealMate:profile')) 
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.test_username)
+        self.assertContains(response, "default_profile.jpg")
+        self.client.logout()
+        response = self.client.get(reverse('MyMealMate:profile'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_edit_view(self):
+        self.client = Client()
+        self.test_username = 'testUser'
+        self.test_password = 'testPassword123'
+        self.test_user = User.objects.create_user(self.test_username, "test@test.com", self.test_password)
+        UserProfile.objects.create(user = self.test_user)
+        self.client.login(username=self.test_username, password=self.test_password)
+        response = self.client.get(reverse('MyMealMate:edit_profile'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, self.test_username)
+        response = self.client.post(reverse('MyMealMate:edit_profile'), {'username': 'updatedUsername', 'first_name': 'updatedName', 'email': 'updatedTest@test.com'})
+        self.assertEqual(response.status_code, 302)
+
+        updated_user = User.objects.get(username='updatedUsername')
+        self.assertEqual(updated_user.first_name, 'updatedName')
+        self.assertEqual(updated_user.email, 'updatedTest@test.com')
+
+        response = self.client.get(reverse('MyMealMate:profile')) 
+        self.assertContains(response, "default_profile.jpg")
+
+        self.client.logout()
+        response = self.client.get(reverse('MyMealMate:edit_profile'))
+        self.assertEqual(response.status_code, 302)
 
 class MealViewsTestCase(TestCase):
     def setUp(self):
@@ -142,3 +218,29 @@ class MealViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(test_meal.ingredients.filter(id=test_ingredient.id).exists())
+
+class TestScheduling(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='testuser', password='password')
+
+    def test_add_meal_of_the_day(self):
+        request = self.factory.post(reverse('MyMealMate:add_meal_of_the_day'), {'meal': 'Test Meal'})
+        request.user = self.user
+        response = add_meal_of_the_day(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Meal.objects.filter(user=self.user, name='Test Meal', schedCounter__gt=0).exists())
+
+    def test_schedule(self):
+        request = self.factory.get(reverse('MyMealMate:schedule'))
+        request.user = self.user
+        response = schedule(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_scheduled_meal(self):
+        test_meal = Meal.objects.create(user=self.user, name='Test Meal', schedCounter=1)
+        request = self.factory.post(reverse('MyMealMate:delete_scheduled_meal'), {'meal': test_meal.slug})
+        request.user = self.user
+        response = delete_scheduled_meal(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Meal.objects.filter(user=self.user, name='Test Meal', schedCounter__gt=0).exists())

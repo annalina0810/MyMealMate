@@ -13,20 +13,23 @@
 
 {% block body_block %}
 <h1>Edit Profile</h1>
+<div class="contentHolder">
+    <form method="POST" enctype="multipart/form-data" >
+        {% csrf_token %}
+     <div class="userDetails">
+        {{ edit_profile_form.as_p }}
+     </div>
 
-<form method="POST" enctype="multipart/form-data" >
-    {% csrf_token %}
-    <div class="userDetails">
-    {{ edit_profile_form.as_p }}
-    </div><div class="profilePic">
-    <img id="editProfilePic" src="{{ profile_picture.url }}" alt="Profile Picture" />   
-    {{ edit_picture_form.as_p }}
-    </div>
+     <div class="profilePic">
+        <img id="editProfilePic" src="{{ profile_picture.url }}" alt="Profile Picture" />   
+        {{ edit_picture_form.as_p }}
+     </div>
     <input class="button" type="submit" name="submit" value="Confirm" />
-</form>
+    </form>
 
-<div class="profileButtons">
-    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:profile' %}';">Back to Profile</button>
-    <button class="button" onclick="confirmAccountDeletion()">Delete Profile</button>
+    <div class="profileButtons">
+     <button class="button" onclick="window.location.href = '{% url 'MyMealMate:profile' %}';">Back to Profile</button>
+     <button class="button" onclick="confirmAccountDeletion()">Delete Profile</button>
+    </div>
 </div>
 {% endblock %}
