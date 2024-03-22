@@ -24,7 +24,7 @@
           <ul id="item-list">
               {%for item in items%}
                 {% if not item.checked %}
-                    <li>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
+                    <li>{{item.name}}{%if item.amount%}: {{item.amount|remove_decimal_if_integer}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a href="#" class="edit-item" data-item-id="{{ item.id }}"><i class="fa fa-pencil"></i></a>
                     <a href="#" class="delete-item" data-item-id="{{ item.id }}"><i class="fa fa-trash"></i></a> </li>
@@ -50,7 +50,7 @@
     <ul>
     {%for item in items%}
         {% if item.checked %}
-        <li><s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s></li>
+        <li><s>{{item.name}}{%if item.amount%}: {{item.amount|remove_decimal_if_integer}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s></li>
         {%endif%}
     {%endfor%}
     </ul>

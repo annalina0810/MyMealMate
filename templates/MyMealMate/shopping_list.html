@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
+{%load MyMealMate_template_tags%}
 
 {% block title_block %}
     Shopping List
@@ -20,9 +21,9 @@
                     {% csrf_token %}
                     <label><input type="checkbox" value="{{item.id}}" onchange="this.form.submit()"  {%if item.checked%} checked {%endif%} />
                         {% if item.checked %}
-                        <s>{{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s>
+                        <s>{{item.name}}{%if item.amount%}: {{item.amount|remove_decimal_if_integer}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}</s>
                         {%else%}
-                        {{item.name}}{%if item.amount%}: {{item.amount}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
+                        {{item.name}}{%if item.amount%}: {{item.amount|remove_decimal_if_integer}} {%if item.unit%} {{item.unit}} {%endif%} {%endif%}
                         {%endif%}</label> <br/>
                 </form>
             {%endfor%}

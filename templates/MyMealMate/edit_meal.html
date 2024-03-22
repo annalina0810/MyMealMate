@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
+{%load MyMealMate_template_tags%}
+
 
 {% block stylesheet_block %}
     <link rel="stylesheet" href="{% static 'css/meal.css' %}">
@@ -28,7 +30,7 @@
           {% csrf_token %}
         <ul id="ingredient-list">
             {% for ingredient in meal.ingredients.all %}
-              <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}
+              <li>{{ ingredient.name }} - {{ ingredient.amount|remove_decimal_if_integer }} {{ ingredient.unit }}
                 <a href="#" class="edit-ingredient" data-ingredient-id="{{ ingredient.id }}"><i class="fa fa-pencil"></i></a>
                 <a href="#" class="delete-ingredient" data-ingredient-id="{{ ingredient.id }}"><i class="fa fa-trash"></i></a>
               </li>
@@ -40,7 +42,7 @@
         <form method="post" enctype="multipart/form-data" id="add-ingredient-form">
           {% csrf_token %}
           <input type="text" id="new-ingredient-name" placeholder="Ingredient name" required>
-          <input type="number" id="new-ingredient-amount" placeholder="Amount" min="1" required>
+          <input type="number" id="new-ingredient-amount" placeholder="Amount" required>
           <input type="text" id="new-ingredient-unit" placeholder="Unit" required>
           <button type="button" id="add-ingredient" class="delete">Add Ingredient</button>
         </form>
