@@ -27,10 +27,15 @@ h1{
     text-align: center;
 }
 
+img{
+    border: 2.5px outset darkolivegreen;
+    border-radius: 10px;
+}
+
 .nav-links a, .auth-links a {
     color: #000000;
     text-decoration: none;
-    border: 1px solid transparent;
+    border: 2.5px solid transparent;
     border-radius: 5px;
     padding: 5px 10px;
     transition: border-color 0.3s ease;
@@ -45,6 +50,7 @@ nav a:hover {
     height: auto;
     position: absolute;
     bottom: -8px;
+    border: none;
 }
 
 .nav-links li {
@@ -155,7 +161,7 @@ form input{
     width: 20%;
 }
 
-.shopping_list {
+.shopping_list_container {
     box-sizing: border-box;
     display: inline-block;
     padding: 20px;
@@ -163,6 +169,10 @@ form input{
     margin: 0 0;
     border-radius: 10px;
     background-color: #d4fcd5;
+    width: 100%;
+    height: 476px;
+    overflow-y: scroll;
+    font-size:18px;
 }
 
 .delete_button{
@@ -175,16 +185,6 @@ form input{
       border: none;
       border-radius: 5px;
       cursor: pointer;
-}
-
-.shopping_list {
-    box-sizing: border-box;
-    display: inline-block;
-    padding: 20px;
-    border: 5px outset darkolivegreen;
-    margin: 0 0;
-    border-radius: 10px;
-    background-color: #d4fcd5;
 }
 
 .delete_button{

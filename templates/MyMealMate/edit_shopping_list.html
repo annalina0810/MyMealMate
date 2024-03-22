@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% extends 'MyMealMate/base.html' %}
 {% load staticfiles %}
+{%load MyMealMate_template_tags%}
 
 {% block title_block %}
     Edit Shopping List
@@ -17,7 +18,7 @@
 
 {% block body_block %}
 <h1>Edit Shopping List</h1>
-<div class="shopping_list">
+<div class="shopping_list_container">
     {%if items%}
     <form name="edit-form" method="post">
         {% csrf_token %}
@@ -54,8 +55,9 @@
         {%endif%}
     {%endfor%}
     </ul>
+    <div>
+        <button class="button" onclick="window.location.href ='{% url 'MyMealMate:shopping_list' %}';">Done</button>
+    </div>
 </div>
-<div>
-    <button class="button" onclick="window.location.href ='{% url 'MyMealMate:shopping_list' %}';">Done</button>
-</div>
+
 {% endblock %}

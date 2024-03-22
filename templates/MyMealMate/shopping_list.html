@@ -14,7 +14,9 @@
 
 {% block body_block %}
 <h1>Shopping List</h1>
-    <div class="shopping_list">
+<div class="shopping_list_container">
+    <!-- <div class="shopping_list"> -->
+        <div>
         {%if items%}
             {%for item in items%}
                 <form action="{%url 'MyMealMate:clicked' item.id %}" method="POST">
@@ -34,8 +36,9 @@
 <br/>
 <div>
 
-    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_shopping_list' %}';">Edit</button>
-    <button class="delete_button" onclick="clearAll()">Clear All</button>
-    <button class="delete_button" onclick="window.location.href = '{% url 'MyMealMate:clear_completed' %}';">Clear completed</button>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_shopping_list' %}';">Add Items</button>
+    <button class="button" onclick="clearAll()">Clear All</button>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:clear_completed' %}';">Clear completed</button>
+</div>
 </div>
 {% endblock %}
