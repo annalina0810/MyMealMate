@@ -223,15 +223,6 @@ def meal(request, meal_name_slug):
     meal = Meal.objects.filter(user=request.user).get(slug=meal_name_slug)
     context_dict = {'nbar': 'meal', "meal": meal, "username_slug": slugify(request.user.username)}
 
-    """"
-    # this is how you'd schedule/unschedule a meal for tomorrow
-    user_schedule = Schedule.objects.get(user=request.user)
-    tomorrow = Day(schedule=user_schedule, date=datetime.date.today() + datetime.timedelta(days=1))
-    tomorrow.save()
-    user_schedule.scheduleMeal(tomorrow, meal)
-    #user_schedule.unscheduleMeal(tomorrow, meal)
-    user_schedule.save()
-    """
     response = render(request, 'MyMealMate/meal.html', context = context_dict)
     return response
 
