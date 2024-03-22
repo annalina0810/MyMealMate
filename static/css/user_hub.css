@@ -1,6 +1,6 @@
 body {
     max-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .title {
@@ -124,7 +124,7 @@ h2 {
 }
 
 .add_meal_of_the_day .button {
-    margin: 0;
+    margin: 10;
     width: 100%;
 }
 
