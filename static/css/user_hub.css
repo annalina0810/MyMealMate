@@ -31,6 +31,16 @@ body {
     height: 100%;
 }
 
+.shopping_list {
+    display: flex;
+    flex-direction: column;
+}
+
+.shopping_list ul {
+    overflow-y:auto;
+    flex:1;
+}
+
 .upcoming_meals {
     margin-right:5px;
 }

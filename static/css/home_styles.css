@@ -1,15 +1,31 @@
-.meal_of_the_day,.login_signup {
-    display: inline-block;
-    border: 1% solid black;
-    height: 80vh;
-    box-sizing: border-box;
-    vertical-align: top;
-    width:48%;
+body {
+    overflow: hidden;
+}
 
+.home_page {
+    display: flex;
+}
+
+.meal_of_the_day,.login_signup {
+    flex:1;
+    height: 85vh;
+    box-sizing: border-box;
+    border: 5px outset darkolivegreen;
+    margin: 0 0;
+    border-radius: 10px;
+    background-color: #d4fcd5;
+}
+
+.meal_of_the_day {
+    margin-right:5px;
+    padding: 20px;
 }
 
 .thumbnail {
+    display: inline-block;
+    max-height: 100%;
     aspect-ratio: 1 / 1;
+    border-radius: 5%;
 }
 
 .thumbnail,#ingredients {
@@ -33,11 +49,30 @@
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    border: 1% solid black;
+    border-bottom: 2px outset darkolivegreen;
     box-sizing: border-box;
-    width: 48%;
+    width: 50%;
+}
+
+.login_signup {
+    position: relative;
+}
+
+.login_signup_nav a {
+    color: black;
+    text-decoration: none;
 }
 
 .selected {
     background-color: green;
+}
+
+.login_signup_nav {
+    border-radius: 5px 5px 0px 0px;
+}
+
+.login_signup form {
+    position: relative;
+    left: 20px;
+    top:20px;
 }
