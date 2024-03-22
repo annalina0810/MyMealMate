@@ -35,11 +35,11 @@
     {% endif %}
     <br>
     <div id="links">
-        <a href="{% url 'MyMealMate:edit_meal' meal.slug %}" class="button_links">Edit Meal</a>
+        <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_meal' meal.slug %}';">Edit Meal</button>
         {% if meal.url %}
-            <a href="{{ meal.url }}" class="button_links">Link to Recipe</a>
+            <button class="button" onclick="window.location.href = '{{ meal.url }}'">Link to Recipe</button>
         {% endif %}
-        <a href="{% url 'MyMealMate:my_meals' %}" class="button_links">Back to My Meals</a>
+        <button class="button" onclick="window.location.href = '{% url 'MyMealMate:my_meals' %}';">Back to My Meals</button>
     </div>
 </div>
 {% endblock %}

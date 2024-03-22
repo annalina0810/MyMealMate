@@ -28,9 +28,9 @@
             </div>
         {% endfor %}
 
-        <input type="submit" name="submit" class="button_links" value="Create Meal" />
+        <input type="submit" name="submit" class="button" value="Create Meal" />
     </form>
-    <button class="button" style="float:right" onclick="window.location.href = '{% url 'MyMealMate:my_meals' %}';">Back to My Meals</button>
+    <button class="button" onclick="window.location.href = '{% url 'MyMealMate:my_meals' %}';">Back to My Meals</button>
 
 </div>
 {% endblock %}

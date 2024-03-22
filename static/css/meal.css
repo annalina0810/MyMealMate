@@ -10,7 +10,6 @@
 }
 
 #meal_form {
-    display: flex;
     flex-direction: column;
 }
 
@@ -19,11 +18,18 @@
 }
 
 input[type="submit"] {
-    align-self: flex-end;
+
+    float:left;
+    width: fit-content;
 }
 
 h1 {
     text-align: center;
+}
+
+#make_meal_container button{
+    float:right;
+    width: fit-content; 
 }
 
 /* Clearfix to contain floated elements */
@@ -45,15 +51,27 @@ h1 {
 }
 
 .meal-list {
-    width: 60%;
-    float: left;
+    flex: 2;
     margin-right: 5px;
     margin-bottom: 15px;
-    min-height: 485px;
+}
+.sidebar{
+    height: 547px;
 }
 
+.sidebar a{
+    color:#000000;
+    font-size:large;
+}
 .meal-list ul {
     list-style-type: none;
+    overflow-y: scroll;
+    height: 410px;
+}
+
+.meal-list a{
+    color: #000000;
+    text-decoration: none;
 }
 
 .meal-info {
@@ -75,11 +93,8 @@ h1 {
     font-size: 20px;
 }
 
-/* Sidebar */
-.sidebar {
-    padding: 30px;
-    float: right;
-    width: 35%; 
+.content{
+    display:flex;
 }
 
 /* Styling for recent meals in the sidebar */

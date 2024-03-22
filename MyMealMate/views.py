@@ -458,7 +458,7 @@ def schedule(request):
     if request.method == 'POST':
         meal_name = request.POST.get('meal-name')
         meal_date = request.POST.get('meal-date')
-        selected_meal = Meal.objects.get(name=meal_name)
+        selected_meal = Meal.objects.get(name=meal_name, user=request.user)
 
 
         if 'add-ingredients' in request.POST:
