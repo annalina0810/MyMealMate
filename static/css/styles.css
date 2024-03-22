@@ -23,6 +23,10 @@ nav {
     
 }
 
+h1{ 
+    text-align: center;
+}
+
 .nav-links a, .auth-links a {
     color: #000000;
     text-decoration: none;
