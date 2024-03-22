@@ -18,8 +18,8 @@
       <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           {{ form.as_p }}
-          <button type="submit">Save changes</button>
-          <button type="submit" class="delete" formaction="{% url 'MyMealMate:delete_meal' meal.slug %}">Delete Recipe</button>
+          <button class="button" type="submit">Save changes</button>
+          <button class="button" type="submit" formaction="{% url 'MyMealMate:delete_meal' meal.slug %}">Delete Recipe</button>
       </form>
       </div>
       <div class="sidebar" style="height: 485px; overflow-y: auto;">
@@ -42,7 +42,7 @@
           <input type="text" id="new-ingredient-name" placeholder="Ingredient name" required>
           <input type="number" id="new-ingredient-amount" placeholder="Amount" min="1" required>
           <input type="text" id="new-ingredient-unit" placeholder="Unit" required>
-          <button type="button" id="add-ingredient" class="delete">Add Ingredient</button>
+          <button class="button" id="add-ingredient" class="delete">Add Ingredient</button>
         </form>
         
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
