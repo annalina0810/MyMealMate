@@ -37,6 +37,7 @@
     
     <div id="links">
         <button class="button" onclick="window.location.href = '{% url 'MyMealMate:edit_meal' meal.slug %}';">Edit Meal</button>
+        <button class="button" onclick="window.location.href = '{% url 'MyMealMate:add_meal_to_shopping_list' meal.slug %}';">Add to Shopping List</button>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <button class="button" type="submit" formaction="{% url 'MyMealMate:delete_meal' meal.slug %}">Delete Recipe</button>

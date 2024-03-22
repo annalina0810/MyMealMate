@@ -13,6 +13,7 @@ urlpatterns = [
     path('my_meals/new_meal/', views.new_meal, name='new_meal'),
     path('my_meals/<slug:meal_name_slug>/', views.meal, name='meal'),
     path('my_meals/<slug:meal_name_slug>/edit_meal/', views.edit_meal, name='edit_meal'),
+    path('my_meals/<slug:meal_name_slug>/add_meal_to_shopping_list/', views.add_meal_to_shopping_list, name='add_meal_to_shopping_list'),
     path('my_meals/<slug:meal_name_slug>/delete_meal/', views.delete_meal, name='delete_meal'),
     path('mymeals/<slug:meal_name_slug>/add_ingredient/', views.add_ingredient, name='add_ingredient'),
     path('mymeals/<slug:meal_name_slug>/delete_ingredient/', views.delete_ingredient, name='delete_ingredient'),
